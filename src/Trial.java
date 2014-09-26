@@ -37,7 +37,6 @@ public class Trial
 		GenerateRawTrial();
 		GenerateTrial();
 	}
-	
 	private void GenerateRawTrial()
 	{
 		ArrayList<Integer> MirrorSwapNumbers = new ArrayList<Integer>();
@@ -63,16 +62,8 @@ public class Trial
 		for (int i = 0; i < m_aEntries.length; i++)
 			m_aEntries[i] = EntryNumbers.get(i);
 	}
-	
 	private void GenerateTrial()
 	{		
-		System.out.println("GENERATED SUCCESSFUL TRIAL");
-		
-		for (int i = 0; i < m_aEntries.length; i++)
-			System.out.print(m_aEntries[i] + ", ");
-		
-		System.out.println();
-		
 		for (int i = 0; i < m_aEntries.length; i++)
 		{
 			if (i == 0)
@@ -129,15 +120,7 @@ public class Trial
 				}
 			}
 		}
-		
-		System.out.println("OUTPUTS ARE AS FOLLOW: ");
-	
-		for (int i = 0; i < m_aEntries.length; i++)
-			System.out.print(m_aEntries[i] + ", ");
-		
-		System.out.println();
 	}
-	
 	private int RandomFingerRight(int previousID)
 	{
 		int newFinger;
