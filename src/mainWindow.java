@@ -1,16 +1,7 @@
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
-
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 
 /*
@@ -23,66 +14,37 @@ import javax.swing.SwingUtilities;
  *  5000ms delay between trials
  *  avoid repetition 
  */
-class Surface extends JPanel
+
+public class mainWindow extends JFrame implements MouseListener
 {
-    private void doDrawing(Graphics g)
-    {
-        Graphics2D g2d = (Graphics2D) g;
-        //g2d.drawString("Java 2D", 50, 50);
-        g2d.setColor(Color.blue);
-        
-        RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-        rh.put(RenderingHints.KEY_RENDERING,
-               RenderingHints.VALUE_RENDER_QUALITY);
-        
-        g2d.setRenderingHints(rh);
-        
-        Dimension size = getSize();
-        Insets insets = getInsets();
-        
-        int windowWidth = size.width - insets.left - insets.right;
-        int windowHeight = size.height - insets.top - insets.bottom;
-        
-        for (int i = 1; i < 10; i++)
-        {
-        	g2d.drawOval(i*windowWidth/9, 7*windowHeight/9,50,50);
-        }
-        
-        //g2d.drawOval(170, 130, 50, 50);
-        //g2d.fillOval(270, 130, 50, 50);
-    }
-
-    @Override
-    public void paintComponent(Graphics g)
-    {
-        super.paintComponent(g);
-        doDrawing(g);
-    }
-}
-
-public class mainRun extends JFrame implements MouseListener
-{
-	public mainRun()
+	public enum State
+	{
+		IDLE,
+		GENERATE,
+		INITIAL_COUNTDOWN,
+		IN_TRIAL,
+		TRIAL_REST,
+		COMPLETED,
+	}
+	
+	State m_State;
+	
+	public mainWindow()
 	{
 		setTitle("Project Nodrog");
-
-        add(new Surface());
+        add(new drawWindow());
         addMouseListener(this);
-
         setSize(1024, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 	}
-
-	public static void main(String[] args)
+	
+	public void StartProgram()
 	{
-		
-		mainRun mainWindow = new mainRun();
+		mainWindow mainWindow = new mainWindow();
         mainWindow.setVisible(true);
-        
-		/*
+		
+        /*
 		SwingUtilities.invokeLater(new Runnable()
 		{
             @Override
@@ -92,10 +54,9 @@ public class mainRun extends JFrame implements MouseListener
                 mainWindow.setVisible(true);
             }
         });
+		*/
+
         
-        */
-		
-		
 		Vector<Trial> generatedTrials = new Vector<Trial>();
 		
 		for (int i = 0; i < 20; i++)
