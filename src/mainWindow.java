@@ -1,8 +1,4 @@
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Vector;
 import javax.swing.JFrame;
-
 
 /*
  * Objective:
@@ -15,87 +11,17 @@ import javax.swing.JFrame;
  *  avoid repetition 
  */
 
-public class mainWindow extends JFrame implements MouseListener
+public class mainWindow extends JFrame
 {
-	public enum State
-	{
-		IDLE,
-		GENERATE,
-		INITIAL_COUNTDOWN,
-		IN_TRIAL,
-		TRIAL_REST,
-		COMPLETED,
-	}
-	
-	State m_State;
+	public static void main(String[] args) {new mainWindow();}
 	
 	public mainWindow()
-	{
+	{	
 		setTitle("Project Nodrog");
         add(new drawWindow());
-        addMouseListener(this);
         setSize(1024, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-	}
-	
-	public void StartProgram()
-	{
-		mainWindow mainWindow = new mainWindow();
-        mainWindow.setVisible(true);
-		
-        /*
-		SwingUtilities.invokeLater(new Runnable()
-		{
-            @Override
-            public void run()
-            {
-                mainRun mainWindow = new mainRun();
-                mainWindow.setVisible(true);
-            }
-        });
-		*/
-
-        
-		Vector<Trial> generatedTrials = new Vector<Trial>();
-		
-		for (int i = 0; i < 20; i++)
-		{
-			Trial myTrial = new Trial();
-			generatedTrials.add(myTrial);
-		}
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e)
-	{
-		int x = e.getX();
-		int y = e.getY();
-		
-		System.out.println(x + " " + y);
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+        setVisible(true);
 	}
 }
