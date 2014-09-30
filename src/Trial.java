@@ -37,6 +37,10 @@ public class Trial
 		GenerateRawTrial();
 		GenerateTrial();
 	}
+	public int getCurrentFinger(int index)
+	{
+		return m_aEntries[index];
+	}
 	private void GenerateRawTrial()
 	{
 		ArrayList<Integer> MirrorSwapNumbers = new ArrayList<Integer>();
