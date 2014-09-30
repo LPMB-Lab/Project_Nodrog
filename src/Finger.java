@@ -1,4 +1,3 @@
-
 public class Finger
 {
 	private int x;
