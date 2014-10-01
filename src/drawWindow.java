@@ -6,14 +6,22 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.TimerTask;
 import java.util.Vector;
 import java.util.Timer;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 class drawWindow extends JPanel implements MouseListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Dimension size;
 	Insets insets;
 	RenderingHints rh;
@@ -29,6 +37,8 @@ class drawWindow extends JPanel implements MouseListener
 	int windowHeight;
 	Timer m_Timer;
 	
+	BufferedImage startButton;
+	
 	public drawWindow()
 	{
 		setSize(1024,800);
@@ -37,6 +47,13 @@ class drawWindow extends JPanel implements MouseListener
 		addMouseListener(this);
 		size = getSize();
         insets = getInsets();
+        try {
+			startButton = ImageIO.read(new File("startButton.png"));
+		} catch (IOException e) {
+			startButton = null;
+			e.printStackTrace();
+		}
+        
 		
 		Reset();
 	}
@@ -53,9 +70,8 @@ class drawWindow extends JPanel implements MouseListener
 		
 		windowWidth = size.width - insets.left - insets.right;
         windowHeight = size.height - insets.top - insets.bottom;
-        System.out.println(size.width);
 
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 40; i++)
 		{
 			Trial myTrial = new Trial();
 			m_vGeneratedTrials.add(myTrial);
@@ -66,9 +82,13 @@ class drawWindow extends JPanel implements MouseListener
     {
         Graphics2D g2d = (Graphics2D) g;
         
+        g2d.setColor(Color.blue);
+        
         switch(m_State)
         {
-	        case IDLE: break;
+	        case IDLE:
+	        	g2d.drawImage(startButton, 5,  5,  null);
+	        	break;
 	        case FINGER_TRACKING:
 	        	g2d.drawString("FINGER TRACKING", windowWidth/2, 50);
 	        	break;
@@ -83,8 +103,6 @@ class drawWindow extends JPanel implements MouseListener
 	        	g2d.drawString("The test is complete! Thank you for participating!", windowWidth/2, 50);
 	        	break;
         }
-
-        g2d.setColor(Color.blue);
         
         rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -147,7 +165,10 @@ class drawWindow extends JPanel implements MouseListener
         {
 	        case IDLE:
         	{
-        		if (x < 50 && y < 50)
+        		if (x < 95 &&
+        			x > 5 &&
+        			y < 45 &&
+        			y > 5)
         		{
         			System.out.println("FINGER TRACKING");
         			m_State = State.FINGER_TRACKING;
@@ -184,6 +205,8 @@ class drawWindow extends JPanel implements MouseListener
 	        	}
         		break;
         	}
+		default:
+			break;
         }
 		
 		repaint();
@@ -199,10 +222,11 @@ class drawWindow extends JPanel implements MouseListener
 		if ( z < 25)
 		{
 			m_vFingers.get(fingerID).setFill(false);
+			repaint();
 			
 			if (m_iCurrentTrialStep == 19)
 			{
-				if (m_iCurrentTrial == 19)
+				if (m_iCurrentTrial == 39)
 				{
 					m_State = State.COMPLETED;
 				}
@@ -217,6 +241,8 @@ class drawWindow extends JPanel implements MouseListener
 			else
 			{
 				m_iCurrentTrialStep++;
+				try {Thread.sleep(500);}
+				catch (InterruptedException e) {e.printStackTrace();}
     			updateTrial();
 			}
     		
