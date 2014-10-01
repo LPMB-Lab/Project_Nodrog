@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.TimerTask;
 import java.util.Vector;
 import java.util.Timer;
-
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
