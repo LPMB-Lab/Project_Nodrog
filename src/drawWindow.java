@@ -31,7 +31,7 @@ class drawWindow extends JPanel implements MouseListener
 	Trial m_CurrentTrial;
 	int m_iCurrentTrial;
 	int m_iCurrentTrialStep;
-	
+	//Test
 	int windowWidth;
 	int windowHeight;
 	Timer m_Timer;
