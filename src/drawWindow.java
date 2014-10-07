@@ -240,9 +240,9 @@ class drawWindow extends JPanel implements MouseListener
 			else
 			{
 				m_iCurrentTrialStep++;
+				updateTrial();
 				try {Thread.sleep(500);}
 				catch (InterruptedException e) {e.printStackTrace();}
-    			updateTrial();
 			}
     		
 		}
