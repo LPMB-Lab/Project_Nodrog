@@ -7,7 +7,6 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -46,10 +45,10 @@ class drawWindow extends JPanel implements MouseListener
 		addMouseListener(this);
 		size = getSize();
         insets = getInsets();
-        try {
-			startButton = ImageIO.read(new File("startButton.png"));
+		try {
+			startButton = ImageIO.read(getClass().getResource("images/startButton.png"));
 		} catch (IOException e) {
-			startButton = null;
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         
