@@ -42,6 +42,7 @@ class drawWindow extends JPanel implements MouseListener
 	Button startButton;
 	Button pauseButton;
 	Button restartButton;
+	Button quitButton;
 	
 	public drawWindow()
 	{
@@ -55,6 +56,7 @@ class drawWindow extends JPanel implements MouseListener
 			startButton = new Button(ImageIO.read(getClass().getResource("images/startButton.png")), 5, 5);
 			pauseButton = new Button(ImageIO.read(getClass().getResource("images/pauseButton.png")), 100, 5);
 			restartButton = new Button(ImageIO.read(getClass().getResource("images/restartButton.png")), 195, 5);
+			quitButton = new Button(ImageIO.read(getClass().getResource("images/quitButton.png")), 290, 5);
 		} catch (IOException e) {e.printStackTrace();}
         
 		
@@ -114,6 +116,7 @@ class drawWindow extends JPanel implements MouseListener
         
         g2d.drawImage(pauseButton.getImage(), pauseButton.getX(), pauseButton.getY(), null);
         g2d.drawImage(restartButton.getImage(), restartButton.getX(), restartButton.getY(), null);
+        g2d.drawImage(quitButton.getImage(), quitButton.getX(), quitButton.getY(), null);
         
         rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -187,6 +190,10 @@ class drawWindow extends JPanel implements MouseListener
 				System.out.println("PAUSE PRESSED");
 			}
     	}
+		else if (quitButton.isPressed(x, y))
+		{
+			System.exit(0);
+		}
 		else if (restartButton.isPressed(x,  y))
 		{
 			Reset();
