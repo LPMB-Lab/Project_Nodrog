@@ -20,6 +20,7 @@ class drawWindow extends JPanel implements MouseListener
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static final int m_iCircleDiameter = 100;
 	Dimension size;
 	Insets insets;
 	RenderingHints rh;
@@ -30,7 +31,6 @@ class drawWindow extends JPanel implements MouseListener
 	Trial m_CurrentTrial;
 	int m_iCurrentTrial;
 	int m_iCurrentTrialStep;
-	//Test
 	int windowWidth;
 	int windowHeight;
 	Timer m_Timer;
@@ -112,9 +112,9 @@ class drawWindow extends JPanel implements MouseListener
         	int y = m_vFingers.get(i).getY();
         	
         	if (m_vFingers.get(i).isFill())
-        		g2d.fillOval( x, y, 50, 50);
+        		g2d.fillOval( x, y, m_iCircleDiameter, m_iCircleDiameter);
         	else
-        		g2d.drawOval( x, y, 50, 50);
+        		g2d.drawOval( x, y, m_iCircleDiameter, m_iCircleDiameter);
         }
     }
     
@@ -175,7 +175,7 @@ class drawWindow extends JPanel implements MouseListener
         	}
 	        case FINGER_TRACKING:
 	        {
-	        	m_vFingers.addElement(new Finger(x-25, y-25));
+	        	m_vFingers.addElement(new Finger(x-m_iCircleDiameter/2, y-m_iCircleDiameter/2));
 	        	System.out.println("GOT " + m_vFingers.size() + " FINGERS (" + x + ", " + y + ")");
 	        	
 	        	if (m_vFingers.size() >= 8)
@@ -210,17 +210,27 @@ class drawWindow extends JPanel implements MouseListener
 		repaint();
 	}
 	
+	private void clearCircles()
+	{
+		Graphics g;
+		
+		for (int i = 0; i < m_vFingers.size(); i++)
+			m_vFingers.get(i).setFill(false);
+		
+		g = getGraphics();
+		paint(g);
+	}
+	
 	private void CheckClick(int x, int y, int fingerID)
 	{
 		int x1 = m_vFingers.get(fingerID).getX();
 		int y1 = m_vFingers.get(fingerID).getY();
-		int z = (int) Math.sqrt(Math.pow((x1+25-x), 2) + Math.pow((y1+25-y), 2));
+		int z = (int) Math.sqrt(Math.pow((x1+m_iCircleDiameter/2-x), 2) + Math.pow((y1+m_iCircleDiameter/2-y), 2));
 		
 		System.out.println("User clicked: (" + x + "," + y + ") and is " + z + " pixels off");
-		if ( z < 25)
+		if ( z < m_iCircleDiameter/2)
 		{
-			m_vFingers.get(fingerID).setFill(false);
-			repaint();
+			clearCircles();
 			
 			if (m_iCurrentTrialStep == 19)
 			{
@@ -238,12 +248,12 @@ class drawWindow extends JPanel implements MouseListener
 			}
 			else
 			{
+				try {Thread.sleep((long)(Math.random()*500 + 500));}
+				catch (InterruptedException e) {e.printStackTrace();}
+				
 				m_iCurrentTrialStep++;
 				updateTrial();
-				try {Thread.sleep(500);}
-				catch (InterruptedException e) {e.printStackTrace();}
 			}
-    		
 		}
 	}
 

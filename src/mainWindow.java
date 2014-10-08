@@ -25,7 +25,7 @@ public class mainWindow extends JFrame
 		setTitle("Project Nodrog");
         add(new drawWindow());
         setSize(1280, 800);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        setExtendedState(JFrame.MAXIMIZED_BOTH); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
