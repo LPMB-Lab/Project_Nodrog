@@ -1,5 +1,6 @@
 enum State
 {
+	PAUSE,
 	IDLE,
 	FINGER_TRACKING,
 	INITIAL_COUNTDOWN,

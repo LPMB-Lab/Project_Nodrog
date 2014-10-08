@@ -6,7 +6,6 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -21,11 +20,13 @@ class drawWindow extends JPanel implements MouseListener
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final int m_iCircleDiameter = 100;
+
 	Dimension size;
 	Insets insets;
 	RenderingHints rh;
 	
 	State m_State;
+	State m_RecoveryState;
 	Vector<Trial> m_vGeneratedTrials;
 	Vector<Finger> m_vFingers;
 	Trial m_CurrentTrial;
@@ -33,9 +34,11 @@ class drawWindow extends JPanel implements MouseListener
 	int m_iCurrentTrialStep;
 	int windowWidth;
 	int windowHeight;
-	Timer m_Timer;
+	boolean m_bIsPaused;
 	
-	BufferedImage startButton;
+	Timer m_Timer;
+	Button startButton;
+	Button pauseButton;
 	
 	public drawWindow()
 	{
@@ -46,11 +49,9 @@ class drawWindow extends JPanel implements MouseListener
 		size = getSize();
         insets = getInsets();
 		try {
-			startButton = ImageIO.read(getClass().getResource("images/startButton.png"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			startButton = new Button(ImageIO.read(getClass().getResource("images/startButton.png")), 5, 5);
+			pauseButton = new Button(ImageIO.read(getClass().getResource("images/pauseButton.png")), 100, 5);
+		} catch (IOException e) {e.printStackTrace();}
         
 		
 		Reset();
@@ -65,6 +66,7 @@ class drawWindow extends JPanel implements MouseListener
 		
 		m_iCurrentTrial = 0;
 		m_iCurrentTrialStep = 0;
+		m_bIsPaused = false;
 		
 		windowWidth = size.width - insets.left - insets.right;
         windowHeight = size.height - insets.top - insets.bottom;
@@ -84,8 +86,9 @@ class drawWindow extends JPanel implements MouseListener
         
         switch(m_State)
         {
+        	case PAUSE:	break;
 	        case IDLE:
-	        	g2d.drawImage(startButton, 5,  5,  null);
+	        	g2d.drawImage(startButton.getImage(), startButton.getX(),  startButton.getY(),  null);
 	        	break;
 	        case FINGER_TRACKING:
 	        	g2d.drawString("FINGER TRACKING", windowWidth/2, 50);
@@ -101,6 +104,8 @@ class drawWindow extends JPanel implements MouseListener
 	        	g2d.drawString("The test is complete! Thank you for participating!", windowWidth/2, 50);
 	        	break;
         }
+        
+        g2d.drawImage(pauseButton.getImage(), pauseButton.getX(), pauseButton.getY(), null);
         
         rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -125,7 +130,8 @@ class drawWindow extends JPanel implements MouseListener
     	updateTask(State state) {this.state = state;}
 		public void run()
 		{
-			m_State = state;
+			if (m_State != State.PAUSE)
+				m_State = state;
 			
 			if (m_State == State.IN_TRIAL)
 				updateTrial();
@@ -158,54 +164,76 @@ class drawWindow extends JPanel implements MouseListener
 		int x = e.getX();
 		int y = e.getY();
 		
+		if (pauseButton.isPressed(x, y))
+    	{
+			if (m_bIsPaused)
+			{
+				m_bIsPaused = false;
+				m_State = m_RecoveryState;
+			}
+			else
+			{
+				m_bIsPaused = true;
+				m_RecoveryState = m_State;
+				m_State = State.PAUSE;
+				System.out.println("PAUSE PRESSED");
+			}
+    	}
+		else
+		{
 		
-		switch(m_State)
-        {
-	        case IDLE:
-        	{
-        		if (x < 95 &&
-        			x > 5 &&
-        			y < 45 &&
-        			y > 5)
-        		{
-        			System.out.println("FINGER TRACKING");
-        			m_State = State.FINGER_TRACKING;
-        		}
-        		break;
-        	}
-	        case FINGER_TRACKING:
+			switch(m_State)
 	        {
-	        	m_vFingers.addElement(new Finger(x-m_iCircleDiameter/2, y-m_iCircleDiameter/2));
-	        	System.out.println("GOT " + m_vFingers.size() + " FINGERS (" + x + ", " + y + ")");
-	        	
-	        	if (m_vFingers.size() >= 8)
+		        case IDLE:
 	        	{
-	        		m_State = State.INITIAL_COUNTDOWN;
-	        		m_Timer.schedule(new updateTask(State.IN_TRIAL), 5000);
+	        		if (startButton.isPressed(x, y))
+	        		{
+	        			System.out.println("FINGER TRACKING");
+	        			m_State = State.FINGER_TRACKING;
+	        		}
+	        		break;
 	        	}
-        		break;
-        	}
-	        case IN_TRIAL:
-	        {
-	        	m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
-	        	int fingerIndex = m_CurrentTrial.getCurrentFinger(m_iCurrentTrialStep);
-	        	
-	        	switch (fingerIndex)
-	        	{
-	    	    	case -4:CheckClick(x, y, 0);	break;
-	    	    	case -3: CheckClick(x, y, 1);	break;
-	    	    	case -2: CheckClick(x, y, 2);	break;
-	    	    	case -1: CheckClick(x, y, 3);	break;
-	    	    	case 1: CheckClick(x, y, 4);	break;
-	    	    	case 2: CheckClick(x, y, 5);	break;
-	    	    	case 3: CheckClick(x, y, 6);	break;
-	    	    	case 4: CheckClick(x, y, 7);	break;
+		        case FINGER_TRACKING:
+		        {
+		        	m_vFingers.addElement(new Finger(x-m_iCircleDiameter/2, y-m_iCircleDiameter/2));
+		        	System.out.println("GOT " + m_vFingers.size() + " FINGERS (" + x + ", " + y + ")");
+		        	
+		        	if (m_vFingers.size() >= 8)
+		        	{
+		        		m_State = State.INITIAL_COUNTDOWN;
+		        		m_Timer.schedule(new updateTask(State.IN_TRIAL), 5000);
+		        	}
+	        		break;
 	        	}
-        		break;
-        	}
-		default:
-			break;
-        }
+		        case IN_TRIAL:
+		        {
+		        	m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
+		        	int fingerIndex = m_CurrentTrial.getCurrentFinger(m_iCurrentTrialStep);
+		        	
+		        	switch (fingerIndex)
+		        	{
+		    	    	case -4:CheckClick(x, y, 0);	break;
+		    	    	case -3: CheckClick(x, y, 1);	break;
+		    	    	case -2: CheckClick(x, y, 2);	break;
+		    	    	case -1: CheckClick(x, y, 3);	break;
+		    	    	case 1: CheckClick(x, y, 4);	break;
+		    	    	case 2: CheckClick(x, y, 5);	break;
+		    	    	case 3: CheckClick(x, y, 6);	break;
+		    	    	case 4: CheckClick(x, y, 7);	break;
+		        	}
+	        		break;
+	        	}
+		        case TRIAL_REST:
+		        	if (pauseButton.isPressed(x, y))
+		        	{
+		    			m_State = State.PAUSE;
+		    			System.out.println("PAUSE PRESSED");
+		        	}
+		        	break;
+			default:
+				break;
+	        }
+		}
 		
 		repaint();
 	}
