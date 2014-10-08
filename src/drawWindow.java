@@ -1,3 +1,5 @@
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -44,6 +46,8 @@ class drawWindow extends JPanel implements MouseListener
 	Button restartButton;
 	Button quitButton;
 	
+	AudioClip correctSound;
+	
 	public drawWindow()
 	{
 		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -52,11 +56,13 @@ class drawWindow extends JPanel implements MouseListener
 		m_vGeneratedTrials = new Vector<Trial>();
 		addMouseListener(this);
         insets = getInsets();
+
 		try {
 			startButton = new Button(ImageIO.read(getClass().getResource("images/startButton.png")), 5, 5);
 			pauseButton = new Button(ImageIO.read(getClass().getResource("images/pauseButton.png")), 100, 5);
 			restartButton = new Button(ImageIO.read(getClass().getResource("images/restartButton.png")), 195, 5);
 			quitButton = new Button(ImageIO.read(getClass().getResource("images/quitButton.png")), 290, 5);
+			correctSound = Applet.newAudioClip(getClass().getResource("sounds/correctSound.wav"));
 		} catch (IOException e) {e.printStackTrace();}
         
 		
@@ -304,6 +310,7 @@ class drawWindow extends JPanel implements MouseListener
 			}
 			else
 			{
+				correctSound.play();
 				try {Thread.sleep((long)(Math.random()*500 + 500));}
 				catch (InterruptedException e) {e.printStackTrace();}
 				
