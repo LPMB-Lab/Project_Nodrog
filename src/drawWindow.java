@@ -4,12 +4,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
-import java.util.Timer;
+
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
@@ -21,7 +23,7 @@ class drawWindow extends JPanel implements MouseListener
 	private static final long serialVersionUID = 1L;
 	private static final int m_iCircleDiameter = 100;
 
-	Dimension size;
+	Dimension screenSize;
 	Insets insets;
 	RenderingHints rh;
 	
@@ -43,11 +45,11 @@ class drawWindow extends JPanel implements MouseListener
 	
 	public drawWindow()
 	{
-		setSize(1024,800);
+		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setSize((int)screenSize.getWidth(),(int)screenSize.getHeight());
 		m_vFingers = new Vector<Finger>();
 		m_vGeneratedTrials = new Vector<Trial>();
 		addMouseListener(this);
-		size = getSize();
         insets = getInsets();
 		try {
 			startButton = new Button(ImageIO.read(getClass().getResource("images/startButton.png")), 5, 5);
@@ -70,8 +72,8 @@ class drawWindow extends JPanel implements MouseListener
 		m_iCurrentTrialStep = 0;
 		m_bIsPaused = false;
 		
-		windowWidth = size.width - insets.left - insets.right;
-        windowHeight = size.height - insets.top - insets.bottom;
+		windowWidth = screenSize.width - insets.left - insets.right;
+        windowHeight = screenSize.height - insets.top - insets.bottom;
 
 		for (int i = 0; i < 40; i++)
 		{
@@ -101,6 +103,9 @@ class drawWindow extends JPanel implements MouseListener
 	        case IN_TRIAL: break;
 	        case TRIAL_REST:
 	        	g2d.drawString("TRIAL #" + m_iCurrentTrial + " Complete! 5 second rest before next!", windowWidth/2, 50);
+	        	break;
+	        case INTERMISSION_REST:
+	        	g2d.drawString("YOU HAVE REACHED HALF WAY! 2 MINUTE BREAK!", windowWidth/2, 50);
 	        	break;
 	        case COMPLETED:
 	        	g2d.drawString("The test is complete! Thank you for participating!", windowWidth/2, 50);
@@ -277,8 +282,17 @@ class drawWindow extends JPanel implements MouseListener
 				{
 					m_iCurrentTrial++;
 					m_iCurrentTrialStep = 0;
-					m_State = State.TRIAL_REST;
-					m_Timer.schedule(new updateTask(State.IN_TRIAL), 5000);
+					
+					if (m_iCurrentTrial == 19)
+					{
+						m_State = State.INTERMISSION_REST;
+						m_Timer.schedule(new updateTask(State.IN_TRIAL), 1000*60*2);
+					}
+					else
+					{
+						m_State = State.TRIAL_REST;
+						m_Timer.schedule(new updateTask(State.IN_TRIAL), 5000);
+					}
 				}
 			}
 			else
