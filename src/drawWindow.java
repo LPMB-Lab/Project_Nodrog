@@ -9,7 +9,12 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -17,6 +22,7 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 class drawWindow extends JPanel implements MouseListener
 {
@@ -46,25 +52,33 @@ class drawWindow extends JPanel implements MouseListener
 	Button pauseButton;
 	Button restartButton;
 	Button quitButton;
+	Button saveButton;
 	
 	AudioClip correctSound;
 	
 	long m_lStartTime;
+	JTextField m_TextBox;
 	
 	public drawWindow()
 	{
+		m_TextBox = new JTextField(10);
 		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setSize((int)screenSize.getWidth(),(int)screenSize.getHeight());
+		addMouseListener(this);
+		add(m_TextBox);
+		
 		m_vFingers = new Vector<Finger>();
 		m_vGeneratedTrials = new Vector<Trial>();
-		addMouseListener(this);
         insets = getInsets();
+        
+        
 
 		try {
 			startButton = new Button(ImageIO.read(getClass().getResource("images/startButton.png")), 5, 5);
 			pauseButton = new Button(ImageIO.read(getClass().getResource("images/pauseButton.png")), 100, 5);
 			restartButton = new Button(ImageIO.read(getClass().getResource("images/restartButton.png")), 195, 5);
 			quitButton = new Button(ImageIO.read(getClass().getResource("images/quitButton.png")), 290, 5);
+			saveButton = new Button(ImageIO.read(getClass().getResource("images/saveButton.png")), 385, 5);
 			correctSound = Applet.newAudioClip(getClass().getResource("sounds/correctSound.wav"));
 		} catch (IOException e) {e.printStackTrace();}
         
@@ -101,7 +115,9 @@ class drawWindow extends JPanel implements MouseListener
         
         switch(m_State)
         {
-        	case PAUSE:	break;
+        	case PAUSE:
+        		g2d.drawString("PAUSED",  windowWidth/2,  50);
+        		break;
 	        case IDLE:
 	        	g2d.drawImage(startButton.getImage(), startButton.getX(),  startButton.getY(),  null);
 	        	break;
@@ -126,6 +142,7 @@ class drawWindow extends JPanel implements MouseListener
         g2d.drawImage(pauseButton.getImage(), pauseButton.getX(), pauseButton.getY(), null);
         g2d.drawImage(restartButton.getImage(), restartButton.getX(), restartButton.getY(), null);
         g2d.drawImage(quitButton.getImage(), quitButton.getX(), quitButton.getY(), null);
+        g2d.drawImage(saveButton.getImage(), saveButton.getX(), saveButton.getY(), null);
         
         rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -192,6 +209,8 @@ class drawWindow extends JPanel implements MouseListener
 			if (m_bIsPaused)
 			{
 				m_bIsPaused = false;
+				if (m_RecoveryState == State.TRIAL_REST)
+					m_Timer.schedule(new updateTask(State.IN_TRIAL), 5000);
 				m_State = m_RecoveryState;
 			}
 			else
@@ -208,11 +227,15 @@ class drawWindow extends JPanel implements MouseListener
 		}
 		else if (restartButton.isPressed(x,  y))
 		{
+			m_Timer.cancel();
 			Reset();
+		}
+		else if(saveButton.isPressed(x,  y))
+		{
+			ExportFile();
 		}
 		else
 		{
-		
 			switch(m_State)
 	        {
 		        case IDLE:
@@ -226,14 +249,15 @@ class drawWindow extends JPanel implements MouseListener
 	        	}
 		        case FINGER_TRACKING:
 		        {
-		        	m_vFingers.addElement(new Finger(x-m_iCircleDiameter/2, y-m_iCircleDiameter/2));
-		        	System.out.println("GOT " + m_vFingers.size() + " FINGERS (" + x + ", " + y + ")");
-		        	
 		        	if (m_vFingers.size() >= 8)
 		        	{
 		        		m_State = State.INITIAL_COUNTDOWN;
 		        		m_Timer.schedule(new updateTask(State.IN_TRIAL), 5000);
 		        	}
+		        	else
+		        		m_vFingers.addElement(new Finger(x-m_iCircleDiameter/2, y-m_iCircleDiameter/2));
+		        	
+		        	System.out.println("GOT " + m_vFingers.size() + " FINGERS (" + x + ", " + y + ")");
 	        		break;
 	        	}
 		        case IN_TRIAL:
@@ -279,7 +303,36 @@ class drawWindow extends JPanel implements MouseListener
 		g = getGraphics();
 		paint(g);
 	}
-	
+
+	private void ExportFile()
+	{
+		try
+		{
+			DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
+			Date date = new Date();
+			String fileName = "";
+			
+			if (m_TextBox.getText().equals(""))
+				fileName = "NON_NAMED_TRIAL" + dateFormat.format(date) + ".txt";
+			else
+				fileName = m_TextBox.getText() + "_" + dateFormat.format(date) + ".txt";
+			
+			PrintWriter writer = new PrintWriter(fileName, "UTF-8");
+			String exportString = "";
+			
+			for (int i = 0; i < m_vGeneratedTrials.size(); i++)
+			{
+				exportString += "TRIAL #" + i + "\r\n";
+				exportString += m_vGeneratedTrials.get(i).ExportTrial();
+				exportString += "\r\n";
+			}
+			
+			writer.println(exportString);
+			writer.close();
+		}
+		catch (FileNotFoundException e) {e.printStackTrace();}
+		catch (UnsupportedEncodingException e) {e.printStackTrace();}
+	}
 	private void CheckClick(int x, int y, int fingerID)
 	{
 		int x1 = m_vFingers.get(fingerID).getX();
@@ -301,6 +354,7 @@ class drawWindow extends JPanel implements MouseListener
 				if (m_iCurrentTrial == 39)
 				{
 					m_State = State.COMPLETED;
+					ExportFile();
 				}
 				else
 				{

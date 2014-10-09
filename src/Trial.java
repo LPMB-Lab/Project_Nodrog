@@ -158,13 +158,26 @@ public class Trial
 	}
 	public String ExportTrial()
 	{
-		String exportString = "";
+		String exportString = "Timings: ";
 		
 		for (int i = 0; i < m_aTimers.length; i++)
 		{
-			exportString += m_aTimers[i] + ", ";
+			if (i == 19)
+				exportString += m_aTimers[i] + "\r\n";
+			else
+				exportString += m_aTimers[i] + ", ";
 		}
 		
+		exportString += "Fingers: ";
+		
+		for (int i = 0; i < m_aEntries.length; i++)
+		{
+			if (i == 19)
+				exportString += m_aEntries[i] + "\r\n";
+			else
+				exportString += m_aEntries[i] + ", ";
+		}
+
 		return exportString;
 	}
 }
