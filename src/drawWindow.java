@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -47,6 +48,8 @@ class drawWindow extends JPanel implements MouseListener
 	Button quitButton;
 	
 	AudioClip correctSound;
+	
+	long m_lStartTime;
 	
 	public drawWindow()
 	{
@@ -151,7 +154,10 @@ class drawWindow extends JPanel implements MouseListener
 				m_State = state;
 			
 			if (m_State == State.IN_TRIAL)
+			{
+				m_lStartTime = new Date().getTime();
 				updateTrial();
+			}
 		}
 	}
     
@@ -280,9 +286,14 @@ class drawWindow extends JPanel implements MouseListener
 		int y1 = m_vFingers.get(fingerID).getY();
 		int z = (int) Math.sqrt(Math.pow((x1+m_iCircleDiameter/2-x), 2) + Math.pow((y1+m_iCircleDiameter/2-y), 2));
 		
-		System.out.println("User clicked: (" + x + "," + y + ") and is " + z + " pixels off");
 		if ( z < m_iCircleDiameter/2)
 		{
+			long lEndTime = new Date().getTime();
+			long diffTime = lEndTime - m_lStartTime;
+			
+			m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
+			m_CurrentTrial.setTimer(m_iCurrentTrialStep, diffTime);
+			
 			clearCircles();
 			
 			if (m_iCurrentTrialStep == 19)
@@ -317,6 +328,7 @@ class drawWindow extends JPanel implements MouseListener
 				m_iCurrentTrialStep++;
 				updateTrial();
 			}
+			m_lStartTime = new Date().getTime();
 		}
 	}
 

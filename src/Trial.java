@@ -19,29 +19,22 @@ import java.util.Random;
 
 public class Trial
 {
-	int[] m_aEntries = new int[20];
-	int[] m_aTimers = new int[20];
-	int[] m_aIntraMirror = new int[4];
-	
-	boolean m_bHasBeenCompleted;
-	int m_iIntraSwapMirrorCount;
+	private int[] m_aEntries = new int[20];
+	private long[] m_aTimers = new long[20];
+	private int[] m_aIntraMirror = new int[4];
+	private int m_iIntraSwapMirrorCount;
 	
 	Trial()
-	{
-		m_bHasBeenCompleted = false;
-		
+	{	
 		for (int i = 0; i < m_aEntries.length; i++)
 			m_aTimers[i] = 0;
 		
 		m_iIntraSwapMirrorCount = 0;
-		GenerateRawTrial();
-		GenerateTrial();
+		GenerateTrials();
 	}
-	public int getCurrentFinger(int index)
-	{
-		return m_aEntries[index];
-	}
-	private void GenerateRawTrial()
+	
+	/* PRIVATE FUNCTIONS */
+	private void GenerateTrials()
 	{
 		ArrayList<Integer> MirrorSwapNumbers = new ArrayList<Integer>();
 		ArrayList<Integer> EntryNumbers = new ArrayList<Integer>();
@@ -65,9 +58,7 @@ public class Trial
 		
 		for (int i = 0; i < m_aEntries.length; i++)
 			m_aEntries[i] = EntryNumbers.get(i);
-	}
-	private void GenerateTrial()
-	{		
+
 		for (int i = 0; i < m_aEntries.length; i++)
 		{
 			if (i == 0)
@@ -151,4 +142,29 @@ public class Trial
 	}
 	private boolean isLeftHand(int id)	{ return id < 0 ? true : false; }
 	private boolean isInterSwap(int id)	{ return id == 0 ? true : false; }
+	
+	/* PUBLIC FUNCTIONS */
+	public void setTimer(int step, long time)
+	{
+		m_aTimers[step] = time;
+		
+		if (step == 19)
+			for (int i = 0; i < m_aTimers.length; i++)
+				System.out.println("Timing for trial " + i + ": " + m_aTimers[i]);
+	}
+	public int getCurrentFinger(int index)
+	{
+		return m_aEntries[index];
+	}
+	public String ExportTrial()
+	{
+		String exportString = "";
+		
+		for (int i = 0; i < m_aTimers.length; i++)
+		{
+			exportString += m_aTimers[i] + ", ";
+		}
+		
+		return exportString;
+	}
 }
