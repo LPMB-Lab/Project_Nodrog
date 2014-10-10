@@ -129,8 +129,20 @@ class drawWindow extends JPanel implements MouseListener
 	        	g2d.drawString("INITIAL COUNTDOWN...", 5, STATE_POSITION);
 	        	break;
 	        case IN_TRIAL: break;
-	        case TRIAL_REST:
-	        	g2d.drawString("TRIAL #" + m_iCurrentTrial + " Complete! 5 second rest before next!", 5, STATE_POSITION);
+	        case TRIAL_REST_5:
+	        	g2d.drawString("TRIAL #" + m_iCurrentTrial + " Complete! Next trial in 5 seconds", 5, STATE_POSITION);
+	        	break;
+	        case TRIAL_REST_4:
+	        	g2d.drawString("TRIAL #" + m_iCurrentTrial + " Complete! Next trial in 4 seconds", 5, STATE_POSITION);
+	        	break;
+	        case TRIAL_REST_3:
+	        	g2d.drawString("TRIAL #" + m_iCurrentTrial + " Complete! Next trial in 3 seconds", 5, STATE_POSITION);
+	        	break;
+	        case TRIAL_REST_2:
+	        	g2d.drawString("TRIAL #" + m_iCurrentTrial + " Complete! Next trial in 2 seconds", 5, STATE_POSITION);
+	        	break;
+	        case TRIAL_REST_1:
+	        	g2d.drawString("TRIAL #" + m_iCurrentTrial + " Complete! Next trial in 1 seconds", 5, STATE_POSITION);
 	        	break;
 	        case INTERMISSION_REST:
 	        	g2d.drawString("YOU HAVE REACHED HALF WAY! 2 MINUTE BREAK!", 5, STATE_POSITION);
@@ -169,13 +181,28 @@ class drawWindow extends JPanel implements MouseListener
 		public void run()
 		{
 			if (m_State != State.PAUSE)
+			{
 				m_State = state;
+				System.out.println("STATE IS: " + m_State);
+			}
 			
+			switch (m_State)
+			{
+				case TRIAL_REST_5:	m_Timer.schedule(new updateTask(State.TRIAL_REST_4), 1000); break;
+				case TRIAL_REST_4:	m_Timer.schedule(new updateTask(State.TRIAL_REST_3), 1000);	break;
+				case TRIAL_REST_3:	m_Timer.schedule(new updateTask(State.TRIAL_REST_2), 1000);	break;
+				case TRIAL_REST_2:	m_Timer.schedule(new updateTask(State.TRIAL_REST_1), 1000);	break;
+				case TRIAL_REST_1:	m_Timer.schedule(new updateTask(State.IN_TRIAL), 1000);	break;
+				default:
+					break;
+			}
 			if (m_State == State.IN_TRIAL)
 			{
 				m_lStartTime = new Date().getTime();
 				updateTrial();
 			}
+			
+			UpdateGraphics();
 		}
 	}
     private void updateTrial()
@@ -203,14 +230,22 @@ class drawWindow extends JPanel implements MouseListener
 		int x = e.getX();
 		int y = e.getY();
 		
-		if (pauseButton.isPressed(x, y))
+		if (startButton.isPressed(x, y))
+		{
+			m_State = State.FINGER_TRACKING;
+		}
+		else if (pauseButton.isPressed(x, y))
     	{
 			if (m_bIsPaused)
 			{
 				m_bIsPaused = false;
-				if (m_RecoveryState == State.TRIAL_REST)
-					m_Timer.schedule(new updateTask(State.IN_TRIAL), 5000);
-				m_State = m_RecoveryState;
+				if (m_RecoveryState == State.TRIAL_REST_5 ||
+						m_RecoveryState == State.TRIAL_REST_4 ||
+						m_RecoveryState == State.TRIAL_REST_3 ||
+						m_RecoveryState == State.TRIAL_REST_2 ||
+						m_RecoveryState == State.TRIAL_REST_1)
+					m_Timer.schedule(new updateTask(State.TRIAL_REST_5), 1000);
+				m_State = State.TRIAL_REST_5;
 			}
 			else
 			{
@@ -236,14 +271,6 @@ class drawWindow extends JPanel implements MouseListener
 		{
 			switch(m_State)
 	        {
-		        case IDLE:
-	        	{
-	        		if (startButton.isPressed(x, y))
-	        		{
-	        			m_State = State.FINGER_TRACKING;
-	        		}
-	        		break;
-	        	}
 		        case FINGER_TRACKING:
 		        {
 		        	if (m_vFingers.size() >= 8)
@@ -273,13 +300,6 @@ class drawWindow extends JPanel implements MouseListener
 		        	}
 	        		break;
 	        	}
-		        case TRIAL_REST:
-		        	if (pauseButton.isPressed(x, y))
-		        	{
-		    			m_State = State.PAUSE;
-		    			System.out.println("PAUSE PRESSED");
-		        	}
-		        	break;
 			default:
 				break;
 	        }
@@ -289,11 +309,14 @@ class drawWindow extends JPanel implements MouseListener
 	}
 	private void clearCircles()
 	{
-		Graphics g;
-		
 		for (int i = 0; i < m_vFingers.size(); i++)
 			m_vFingers.get(i).setFill(false);
-		
+		UpdateGraphics();
+
+	}
+	private void UpdateGraphics()
+	{
+		Graphics g;
 		g = getGraphics();
 		paint(g);
 	}
@@ -360,12 +383,12 @@ class drawWindow extends JPanel implements MouseListener
 					if (m_iCurrentTrial == 19)
 					{
 						m_State = State.INTERMISSION_REST;
-						m_Timer.schedule(new updateTask(State.IN_TRIAL), 1000*60*2);
+						m_Timer.schedule(new updateTask(State.TRIAL_REST_5), 1000*60*2-5000);
 					}
 					else
 					{
-						m_State = State.TRIAL_REST;
-						m_Timer.schedule(new updateTask(State.IN_TRIAL), 5000);
+						m_State = State.TRIAL_REST_5;
+						m_Timer.schedule(new updateTask(State.TRIAL_REST_5), 1000);
 					}
 				}
 			}
