@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
@@ -35,7 +34,6 @@ class drawWindow extends JPanel implements MouseListener
 	private static final int STATE_POSITION = 105;
 
 	Dimension screenSize;
-	Insets insets;
 	RenderingHints rh;
 	
 	State m_State;
@@ -72,7 +70,6 @@ class drawWindow extends JPanel implements MouseListener
 		
 		m_vFingers = new Vector<Finger>();
 		m_vGeneratedTrials = new Vector<Trial>();
-        insets = getInsets();
 
 		try {
 			startButton = new Button(ImageIO.read(getClass().getResource("images/startButton.png")), 5, 5);
@@ -96,9 +93,6 @@ class drawWindow extends JPanel implements MouseListener
 		m_iCurrentTrialStep = 0;
 		m_bIsPaused = false;
 		m_iGlobalTimer = 0;
-		
-		windowWidth = screenSize.width - insets.left - insets.right;
-        windowHeight = screenSize.height - insets.top - insets.bottom;
 
 		for (int i = 0; i < 40; i++)
 		{
