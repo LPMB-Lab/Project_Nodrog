@@ -312,9 +312,9 @@ class drawWindow extends JPanel implements MouseListener
 			String fileName = "";
 			
 			if (m_TextBox.getText().equals(""))
-				fileName = "NON_NAMED_TRIAL" + dateFormat.format(date) + ".txt";
+				fileName = dateFormat.format(date) + "_NON_NAMED_TRIAL" + ".txt";
 			else
-				fileName = m_TextBox.getText() + "_" + dateFormat.format(date) + ".txt";
+				fileName = dateFormat.format(date) + "_" + m_TextBox.getText() + ".txt";
 			
 			PrintWriter writer = new PrintWriter(fileName, "UTF-8");
 			String exportString = "";
