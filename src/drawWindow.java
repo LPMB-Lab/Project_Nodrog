@@ -104,6 +104,10 @@ class drawWindow extends JPanel implements MouseListener
     {
         Graphics2D g2d = (Graphics2D) g;
         
+        rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHints(rh);
+        
         g2d.setColor(Color.blue);
         g2d.setFont(new Font("TimesRoman", Font.PLAIN, 30)); 
         
@@ -132,10 +136,6 @@ class drawWindow extends JPanel implements MouseListener
         g2d.drawImage(restartButton.getImage(), restartButton.getX(), restartButton.getY(), null);
         g2d.drawImage(quitButton.getImage(), quitButton.getX(), quitButton.getY(), null);
         g2d.drawImage(saveButton.getImage(), saveButton.getX(), saveButton.getY(), null);
-        
-        rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHints(rh);
         
         for (int i = 0; i < m_vFingers.size(); i++)
         {
