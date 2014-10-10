@@ -118,29 +118,30 @@ class drawWindow extends JPanel implements MouseListener
         switch(m_State)
         {
         	case PAUSE:
-        		g2d.drawString("PAUSED",  windowWidth/2,  50);
+        		g2d.drawString("PAUSED", 5,  105);
         		break;
 	        case IDLE:
 	        	g2d.drawImage(startButton.getImage(), startButton.getX(),  startButton.getY(),  null);
 	        	break;
 	        case FINGER_TRACKING:
-	        	g2d.drawString("FINGER TRACKING", windowWidth/2, 50);
+	        	g2d.drawString("FINGER TRACKING", 5, 105);
 	        	break;
 	        case INITIAL_COUNTDOWN:
-	        	g2d.drawString("INITIAL COUNTDOWN...", windowWidth/2, 50);
+	        	g2d.drawString("INITIAL COUNTDOWN...", 5, 105);
 	        	break;
 	        case IN_TRIAL: break;
 	        case TRIAL_REST:
-	        	g2d.drawString("TRIAL #" + m_iCurrentTrial + " Complete! 5 second rest before next!", windowWidth/2, 50);
+	        	g2d.drawString("TRIAL #" + m_iCurrentTrial + " Complete! 5 second rest before next!", 5, 105);
 	        	break;
 	        case INTERMISSION_REST:
-	        	g2d.drawString("YOU HAVE REACHED HALF WAY! 2 MINUTE BREAK!", windowWidth/2, 50);
+	        	g2d.drawString("YOU HAVE REACHED HALF WAY! 2 MINUTE BREAK!", 5, 105);
 	        	break;
 	        case COMPLETED:
-	        	g2d.drawString("The test is complete! Thank you for participating!", windowWidth/2, 50);
+	        	g2d.drawString("The test is complete! Thank you for participating!", 5, 105);
 	        	break;
         }
         
+        g2d.drawString("CURRENT TRIAL: " + (m_iCurrentTrial + 1) + "/40", 5, 75);
         g2d.drawImage(pauseButton.getImage(), pauseButton.getX(), pauseButton.getY(), null);
         g2d.drawImage(restartButton.getImage(), restartButton.getX(), restartButton.getY(), null);
         g2d.drawImage(quitButton.getImage(), quitButton.getX(), quitButton.getY(), null);
@@ -220,7 +221,6 @@ class drawWindow extends JPanel implements MouseListener
 				m_bIsPaused = true;
 				m_RecoveryState = m_State;
 				m_State = State.PAUSE;
-				System.out.println("PAUSE PRESSED");
 			}
     	}
 		else if (quitButton.isPressed(x, y))
@@ -244,7 +244,6 @@ class drawWindow extends JPanel implements MouseListener
 	        	{
 	        		if (startButton.isPressed(x, y))
 	        		{
-	        			System.out.println("FINGER TRACKING");
 	        			m_State = State.FINGER_TRACKING;
 	        		}
 	        		break;
@@ -258,8 +257,6 @@ class drawWindow extends JPanel implements MouseListener
 		        	}
 		        	else
 		        		m_vFingers.addElement(new Finger(x-m_iCircleDiameter/2, y-m_iCircleDiameter/2));
-		        	
-		        	System.out.println("GOT " + m_vFingers.size() + " FINGERS (" + x + ", " + y + ")");
 	        		break;
 	        	}
 		        case IN_TRIAL:
@@ -326,6 +323,9 @@ class drawWindow extends JPanel implements MouseListener
 			{
 				exportString += "TRIAL #" + i + "\r\n";
 				exportString += m_vGeneratedTrials.get(i).ExportTrial();
+				exportString += "Average InterSwitch Time: " + m_vGeneratedTrials.get(i).getAvgInterSwitchTime() + "\r\n";
+				exportString += "Average IntraSwitch Time: " + m_vGeneratedTrials.get(i).getAvgIntraSwitchTime() + "\r\n";
+				exportString += "Fastest Time: " + m_vGeneratedTrials.get(i).getFastestTime() + "\r\n";
 				exportString += "\r\n";
 			}
 			

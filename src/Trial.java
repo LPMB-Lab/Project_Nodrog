@@ -19,16 +19,22 @@ import java.util.Random;
 
 public class Trial
 {
+	private int[] m_aRawEntries = new int[20];
 	private int[] m_aEntries = new int[20];
 	private long[] m_aTimers = new long[20];
 	private int[] m_aIntraMirror = new int[4];
 	private int m_iIntraSwapMirrorCount;
+	private int m_iAvgInterSwitchTime;
+	private int m_iAvgIntraSwitchTime;
+	private long m_iFastestTime;
 	
 	Trial()
 	{	
 		for (int i = 0; i < m_aEntries.length; i++)
 			m_aTimers[i] = 0;
 		
+		m_iAvgInterSwitchTime = 0;
+		m_iAvgIntraSwitchTime = 0;
 		m_iIntraSwapMirrorCount = 0;
 		GenerateTrials();
 	}
@@ -42,9 +48,11 @@ public class Trial
 		for (int i = 1; i < 9; i++)
 			MirrorSwapNumbers.add(i);
 		
+		// Add Interswaps as 0s
 		for (int i = 1; i < 9; i++)
 			EntryNumbers.add(0);
 		
+		// Add Intraswaps as 1s
 		for (int i = 1; i < 12; i++)
 			EntryNumbers.add(1);
 			
@@ -57,7 +65,10 @@ public class Trial
 		EntryNumbers.add(0, 0);
 		
 		for (int i = 0; i < m_aEntries.length; i++)
+		{
+			m_aRawEntries[i] = EntryNumbers.get(i);
 			m_aEntries[i] = EntryNumbers.get(i);
+		}
 
 		for (int i = 0; i < m_aEntries.length; i++)
 		{
@@ -149,8 +160,29 @@ public class Trial
 		m_aTimers[step] = time;
 		
 		if (step == 19)
+		{
 			for (int i = 0; i < m_aTimers.length; i++)
-				System.out.println("Timing for trial " + i + ": " + m_aTimers[i]);
+			{
+				if (i == 0)
+					m_iFastestTime = m_aTimers[i];
+				else
+				{
+					if (m_aTimers[i] < m_iFastestTime)
+						m_iFastestTime = m_aTimers[i];
+				}
+			}
+			
+			for (int i = 1; i < m_aRawEntries.length; i++)
+			{
+				if (m_aRawEntries[i] == 1)
+					m_iAvgIntraSwitchTime += m_aTimers[i];
+				else if (m_aRawEntries[i] == 0)
+					m_iAvgInterSwitchTime += m_aTimers[i];
+			}
+			
+			m_iAvgInterSwitchTime /= 8;
+			m_iAvgIntraSwitchTime /= 11;
+		}
 	}
 	public int getCurrentFinger(int index)
 	{
@@ -177,7 +209,20 @@ public class Trial
 			else
 				exportString += m_aEntries[i] + ", ";
 		}
+		
+		exportString += "Raw Fingers: ";
+		
+		for (int i = 1; i < m_aRawEntries.length; i++)
+		{
+			if (i == 19)
+				exportString += m_aRawEntries[i] + "\r\n";
+			else
+				exportString += m_aRawEntries[i] + ", ";
+		}
 
 		return exportString;
 	}
+	public int getAvgInterSwitchTime() {return m_iAvgInterSwitchTime;}
+	public int getAvgIntraSwitchTime() {return m_iAvgIntraSwitchTime;}
+	public long getFastestTime()	{return m_iFastestTime;}
 }
