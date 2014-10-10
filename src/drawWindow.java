@@ -32,6 +32,7 @@ class drawWindow extends JPanel implements MouseListener
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final int m_iCircleDiameter = 100;
+	private static final int STATE_POSITION = 105;
 
 	Dimension screenSize;
 	Insets insets;
@@ -86,7 +87,6 @@ class drawWindow extends JPanel implements MouseListener
 		
 		Reset();
 	}
-	
 	private void Reset()
 	{
 		m_State = State.IDLE;
@@ -107,7 +107,6 @@ class drawWindow extends JPanel implements MouseListener
 			m_vGeneratedTrials.add(myTrial);
 		}
 	}
-
     private void doDrawing(Graphics g)
     {
         Graphics2D g2d = (Graphics2D) g;
@@ -118,26 +117,26 @@ class drawWindow extends JPanel implements MouseListener
         switch(m_State)
         {
         	case PAUSE:
-        		g2d.drawString("PAUSED", 5,  105);
+        		g2d.drawString("PAUSED", 5,  STATE_POSITION);
         		break;
 	        case IDLE:
 	        	g2d.drawImage(startButton.getImage(), startButton.getX(),  startButton.getY(),  null);
 	        	break;
 	        case FINGER_TRACKING:
-	        	g2d.drawString("FINGER TRACKING", 5, 105);
+	        	g2d.drawString("FINGER TRACKING", 5, STATE_POSITION);
 	        	break;
 	        case INITIAL_COUNTDOWN:
-	        	g2d.drawString("INITIAL COUNTDOWN...", 5, 105);
+	        	g2d.drawString("INITIAL COUNTDOWN...", 5, STATE_POSITION);
 	        	break;
 	        case IN_TRIAL: break;
 	        case TRIAL_REST:
-	        	g2d.drawString("TRIAL #" + m_iCurrentTrial + " Complete! 5 second rest before next!", 5, 105);
+	        	g2d.drawString("TRIAL #" + m_iCurrentTrial + " Complete! 5 second rest before next!", 5, STATE_POSITION);
 	        	break;
 	        case INTERMISSION_REST:
-	        	g2d.drawString("YOU HAVE REACHED HALF WAY! 2 MINUTE BREAK!", 5, 105);
+	        	g2d.drawString("YOU HAVE REACHED HALF WAY! 2 MINUTE BREAK!", 5, STATE_POSITION);
 	        	break;
 	        case COMPLETED:
-	        	g2d.drawString("The test is complete! Thank you for participating!", 5, 105);
+	        	g2d.drawString("The test is complete! Thank you for participating!", 5, STATE_POSITION);
 	        	break;
         }
         
@@ -162,7 +161,6 @@ class drawWindow extends JPanel implements MouseListener
         		g2d.drawOval( x, y, m_iCircleDiameter, m_iCircleDiameter);
         }
     }
-    
     class updateTask extends TimerTask
 	{
     	State state;
@@ -180,7 +178,6 @@ class drawWindow extends JPanel implements MouseListener
 			}
 		}
 	}
-    
     private void updateTrial()
     {
     	m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
@@ -200,7 +197,6 @@ class drawWindow extends JPanel implements MouseListener
     	
     	repaint();
     }
-    
 	@Override
 	public void mousePressed(MouseEvent e)
 	{	
@@ -291,7 +287,6 @@ class drawWindow extends JPanel implements MouseListener
 		
 		repaint();
 	}
-	
 	private void clearCircles()
 	{
 		Graphics g;
@@ -302,7 +297,6 @@ class drawWindow extends JPanel implements MouseListener
 		g = getGraphics();
 		paint(g);
 	}
-
 	private void ExportFile()
 	{
 		try
