@@ -43,8 +43,6 @@ class drawWindow extends JPanel implements MouseListener
 	Trial m_CurrentTrial;
 	int m_iCurrentTrial;
 	int m_iCurrentTrialStep;
-	int windowWidth;
-	int windowHeight;
 	boolean m_bIsPaused;
 	
 	Timer m_Timer;
@@ -85,6 +83,9 @@ class drawWindow extends JPanel implements MouseListener
 	}
 	private void Reset()
 	{
+		if (m_Timer != null)
+			m_Timer.cancel();
+		
 		m_State = State.IDLE;
 		m_Timer = new Timer();
 		m_vGeneratedTrials.clear();
@@ -214,40 +215,11 @@ class drawWindow extends JPanel implements MouseListener
 		int x = e.getX();
 		int y = e.getY();
 		
-		if (startButton.isPressed(x, y))
-		{
-			m_State = State.FINGER_TRACKING;
-		}
-		else if (pauseButton.isPressed(x, y))
-    	{
-			if (m_bIsPaused)
-			{
-				m_bIsPaused = false;
-				if (m_RecoveryState == State.COUNTDOWN)
-					countDownToState(5, State.IN_TRIAL);
-				else
-					m_State = m_RecoveryState;
-			}
-			else
-			{
-				m_bIsPaused = true;
-				m_RecoveryState = m_State;
-				m_State = State.PAUSE;
-			}
-    	}
-		else if (quitButton.isPressed(x, y))
-		{
-			System.exit(0);
-		}
-		else if (restartButton.isPressed(x,  y))
-		{
-			m_Timer.cancel();
-			Reset();
-		}
-		else if(saveButton.isPressed(x,  y))
-		{
-			ExportFile();
-		}
+		if (startButton.isPressed(x, y))		{StartSimulation();}
+		else if (pauseButton.isPressed(x, y))	{PauseSimulation();}
+		else if (quitButton.isPressed(x, y))	{System.exit(0);}
+		else if (restartButton.isPressed(x,  y)){Reset();}
+		else if(saveButton.isPressed(x,  y))	{ExportFile();}
 		else
 		{
 			switch(m_State)
@@ -290,13 +262,33 @@ class drawWindow extends JPanel implements MouseListener
 		for (int i = 0; i < m_vFingers.size(); i++)
 			m_vFingers.get(i).setFill(false);
 		UpdateGraphics();
-
 	}
 	private void UpdateGraphics()
 	{
 		Graphics g;
 		g = getGraphics();
 		paint(g);
+	}
+	private void StartSimulation()
+	{
+		m_State = State.FINGER_TRACKING;
+	}
+	private void PauseSimulation()
+	{
+		if (m_bIsPaused)
+		{
+			m_bIsPaused = false;
+			if (m_RecoveryState == State.COUNTDOWN)
+				countDownToState(5, State.IN_TRIAL);
+			else
+				m_State = m_RecoveryState;
+		}
+		else
+		{
+			m_bIsPaused = true;
+			m_RecoveryState = m_State;
+			m_State = State.PAUSE;
+		}
 	}
 	private void ExportFile()
 	{
