@@ -341,6 +341,8 @@ class drawWindow extends JPanel implements MouseListener
 				
 				writer.println(exportString);
 				writer.close();
+				
+				JOptionPane.showMessageDialog(null, "Save Successful!", "Save Success", JOptionPane.PLAIN_MESSAGE);
 			}
 			catch (FileNotFoundException e) {e.printStackTrace();}
 			catch (UnsupportedEncodingException e) {e.printStackTrace();}
