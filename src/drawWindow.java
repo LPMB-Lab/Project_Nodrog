@@ -21,6 +21,8 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -56,16 +58,13 @@ class drawWindow extends JPanel implements MouseListener
 	AudioClip correctSound;
 	
 	long m_lStartTime;
-	JTextField m_TextBox;
 	int m_iGlobalTimer;
 	
 	public drawWindow()
 	{
-		m_TextBox = new JTextField(10);
 		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setSize((int)screenSize.getWidth(),(int)screenSize.getHeight());
 		addMouseListener(this);
-		add(m_TextBox);
 		
 		m_vFingers = new Vector<Finger>();
 		m_vGeneratedTrials = new Vector<Trial>();
@@ -152,14 +151,14 @@ class drawWindow extends JPanel implements MouseListener
     }
     class updateTask extends TimerTask
 	{
-    	State state;
+    	State goToState;
     	
-    	updateTask(State state) {this.state = state;}
+    	updateTask(State state) {goToState = state;}
 		public void run()
 		{
 			if (m_State != State.PAUSE && m_State != State.COUNTDOWN)
 			{
-				m_State = state;
+				m_State = goToState;
 				System.out.println("STATE IS: " + m_State);
 			}
 			
@@ -167,7 +166,7 @@ class drawWindow extends JPanel implements MouseListener
 			{
 				if (m_iGlobalTimer == 0)
 				{
-					m_State = state;
+					m_State = goToState;
 				}
 				else
 				{
@@ -304,28 +303,28 @@ class drawWindow extends JPanel implements MouseListener
 	}
 	private void ExportFile()
 	{
+		JTextField fileNameInput = new JTextField();
+		final JComponent[] inputs = new JComponent[] {new JLabel("Please enter File Name"),fileNameInput};
+		JOptionPane.showMessageDialog(null, inputs, "Save File", JOptionPane.PLAIN_MESSAGE);
+		
 		try
 		{
 			DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
 			Date date = new Date();
 			String fileName = "";
 			
-			if (m_TextBox.getText().equals(""))
-				fileName = dateFormat.format(date) + "_NON_NAMED_TRIAL" + ".txt";
+			if (fileNameInput.getText().equals(""))
+				fileName = dateFormat.format(date) + "_NON_NAMED_TRIAL" + ".xls";
 			else
-				fileName = dateFormat.format(date) + "_" + m_TextBox.getText() + ".txt";
+				fileName = dateFormat.format(date) + "_" + fileNameInput.getText() + ".xls";
 			
-			PrintWriter writer = new PrintWriter(fileName, "UTF-8");
+			PrintWriter writer = new PrintWriter(fileName, "US-ASCII");
 			String exportString = "";
 			
 			for (int i = 0; i < m_vGeneratedTrials.size(); i++)
 			{
-				exportString += "TRIAL #" + i + "\r\n";
+				exportString += "TRIAL #" + (i+1) + "\r\n";
 				exportString += m_vGeneratedTrials.get(i).ExportTrial();
-				exportString += "Average InterSwitch Time: " + m_vGeneratedTrials.get(i).getAvgInterSwitchTime() + "\r\n";
-				exportString += "Average IntraSwitch Time: " + m_vGeneratedTrials.get(i).getAvgIntraSwitchTime() + "\r\n";
-				exportString += "Fastest Time: " + m_vGeneratedTrials.get(i).getFastestTime() + "\r\n";
-				exportString += "\r\n";
 			}
 			
 			writer.println(exportString);

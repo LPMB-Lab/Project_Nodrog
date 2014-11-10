@@ -190,39 +190,40 @@ public class Trial
 	}
 	public String ExportTrial()
 	{
-		String exportString = "Timings: ";
+		String exportString = "Timings:\t";
 		
 		for (int i = 0; i < m_aTimers.length; i++)
 		{
 			if (i == 19)
 				exportString += m_aTimers[i] + "\r\n";
 			else
-				exportString += m_aTimers[i] + ", ";
+				exportString += m_aTimers[i] + "\t";
 		}
 		
-		exportString += "Fingers: ";
+		exportString += "Fingers:\t";
 		
 		for (int i = 0; i < m_aEntries.length; i++)
 		{
 			if (i == 19)
 				exportString += m_aEntries[i] + "\r\n";
 			else
-				exportString += m_aEntries[i] + ", ";
+				exportString += m_aEntries[i] + "\t";
 		}
 		
-		exportString += "Raw Fingers: ";
+		exportString += "Raw Fingers:\t";
 		
-		for (int i = 1; i < m_aRawEntries.length; i++)
+		for (int i = 0; i < m_aRawEntries.length; i++)
 		{
 			if (i == 19)
 				exportString += m_aRawEntries[i] + "\r\n";
 			else
-				exportString += m_aRawEntries[i] + ", ";
+				exportString += m_aRawEntries[i] + "\t";
 		}
+		
+		exportString += "Average InterSwitch Time: \t" + m_iAvgInterSwitchTime + "\r\n";
+		exportString += "Average IntraSwitch Time: \t" + m_iAvgIntraSwitchTime + "\r\n";
+		exportString += "Fastest Time: \t" + m_iFastestTime + "\r\n\r\n";
 
 		return exportString;
 	}
-	public int getAvgInterSwitchTime() {return m_iAvgInterSwitchTime;}
-	public int getAvgIntraSwitchTime() {return m_iAvgIntraSwitchTime;}
-	public long getFastestTime()	{return m_iFastestTime;}
 }
