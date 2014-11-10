@@ -304,7 +304,13 @@ class drawWindow extends JPanel implements MouseListener
 	private void ExportFile()
 	{
 		JTextField fileNameInput = new JTextField();
-		final JComponent[] inputs = new JComponent[] {new JLabel("Please enter File Name"),fileNameInput};
+		String CompletionString = "Please enter File Name";
+		
+		if (m_State != State.COMPLETED)
+			CompletionString += " (Trial is Unfinished)";
+		
+		
+		final JComponent[] inputs = new JComponent[] {new JLabel(CompletionString),fileNameInput};
 		int dialogResult = JOptionPane.showConfirmDialog (
 				null,
 				inputs,
