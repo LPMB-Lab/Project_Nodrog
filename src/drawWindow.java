@@ -21,6 +21,7 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -217,7 +218,7 @@ class drawWindow extends JPanel implements MouseListener
 		
 		if (startButton.isPressed(x, y))		{StartSimulation();}
 		else if (pauseButton.isPressed(x, y))	{PauseSimulation();}
-		else if (quitButton.isPressed(x, y))	{System.exit(0);}
+		else if (quitButton.isPressed(x, y))	{QuitSimulation();}
 		else if (restartButton.isPressed(x,  y)){Reset();}
 		else if(saveButton.isPressed(x,  y))	{ExportFile();}
 		else
@@ -268,6 +269,17 @@ class drawWindow extends JPanel implements MouseListener
 		Graphics g;
 		g = getGraphics();
 		paint(g);
+	}
+	private void QuitSimulation()
+	{	
+		int dialogResult = JOptionPane.showConfirmDialog (
+				null,
+				"Are you sure you want to quit?",
+				"Warning",
+				JOptionPane.YES_NO_OPTION);
+		
+		if(dialogResult == JOptionPane.YES_OPTION)
+			System.exit(0);
 	}
 	private void StartSimulation()
 	{
