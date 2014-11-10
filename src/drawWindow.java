@@ -305,33 +305,40 @@ class drawWindow extends JPanel implements MouseListener
 	{
 		JTextField fileNameInput = new JTextField();
 		final JComponent[] inputs = new JComponent[] {new JLabel("Please enter File Name"),fileNameInput};
-		JOptionPane.showMessageDialog(null, inputs, "Save File", JOptionPane.PLAIN_MESSAGE);
+		int dialogResult = JOptionPane.showConfirmDialog (
+				null,
+				inputs,
+				"Save File",
+				JOptionPane.OK_CANCEL_OPTION);
 		
-		try
+		if (dialogResult == JOptionPane.YES_OPTION)
 		{
-			DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
-			Date date = new Date();
-			String fileName = "";
-			
-			if (fileNameInput.getText().equals(""))
-				fileName = dateFormat.format(date) + "_NON_NAMED_TRIAL" + ".xls";
-			else
-				fileName = dateFormat.format(date) + "_" + fileNameInput.getText() + ".xls";
-			
-			PrintWriter writer = new PrintWriter(fileName, "US-ASCII");
-			String exportString = "";
-			
-			for (int i = 0; i < m_vGeneratedTrials.size(); i++)
+			try
 			{
-				exportString += "TRIAL #" + (i+1) + "\r\n";
-				exportString += m_vGeneratedTrials.get(i).ExportTrial();
+				DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
+				Date date = new Date();
+				String fileName = "";
+				
+				if (fileNameInput.getText().equals(""))
+					fileName = dateFormat.format(date) + "_NON_NAMED_TRIAL" + ".xls";
+				else
+					fileName = dateFormat.format(date) + "_" + fileNameInput.getText() + ".xls";
+				
+				PrintWriter writer = new PrintWriter(fileName, "US-ASCII");
+				String exportString = "";
+				
+				for (int i = 0; i < m_vGeneratedTrials.size(); i++)
+				{
+					exportString += "TRIAL #" + (i+1) + "\r\n";
+					exportString += m_vGeneratedTrials.get(i).ExportTrial();
+				}
+				
+				writer.println(exportString);
+				writer.close();
 			}
-			
-			writer.println(exportString);
-			writer.close();
+			catch (FileNotFoundException e) {e.printStackTrace();}
+			catch (UnsupportedEncodingException e) {e.printStackTrace();}
 		}
-		catch (FileNotFoundException e) {e.printStackTrace();}
-		catch (UnsupportedEncodingException e) {e.printStackTrace();}
 	}
 	private void CheckClick(int x, int y, int fingerID)
 	{
