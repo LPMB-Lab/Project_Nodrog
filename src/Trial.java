@@ -188,6 +188,15 @@ public class Trial
 	{
 		return m_aEntries[index];
 	}
+	public String getHomologousString()
+	{
+		String finalString = "";
+		
+		for (int i = 0; i < m_aIntraMirror.length; i++)
+			finalString += m_aIntraMirror[i] + "\t";
+		
+		return finalString;
+	}
 	public String ExportTrial()
 	{
 		String exportString = "Timings:\t";
@@ -222,6 +231,7 @@ public class Trial
 		
 		exportString += "Average InterSwitch Time: \t" + m_iAvgInterSwitchTime + "\r\n";
 		exportString += "Average IntraSwitch Time: \t" + m_iAvgIntraSwitchTime + "\r\n";
+		exportString += "Homologous InterSwitch Entries: \t" + getHomologousString() + "\r\n";
 		exportString += "Fastest Time: \t" + m_iFastestTime + "\r\n\r\n";
 
 		return exportString;
