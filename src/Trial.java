@@ -26,6 +26,8 @@ public class Trial
 	private int m_iIntraSwapMirrorCount;
 	private int m_iAvgInterSwitchTime;
 	private int m_iAvgIntraSwitchTime;
+	private int m_iAvgInterHomologousSwitchTime;
+	private int m_iAvgInterNonHomologousSwitchTime;
 	private long m_iFastestTime;
 	
 	Trial()
@@ -35,6 +37,8 @@ public class Trial
 		
 		m_iAvgInterSwitchTime = 0;
 		m_iAvgIntraSwitchTime = 0;
+		m_iAvgInterHomologousSwitchTime = 0;
+		m_iAvgInterNonHomologousSwitchTime = 0;
 		m_iIntraSwapMirrorCount = 0;
 		GenerateTrials();
 	}
@@ -180,6 +184,31 @@ public class Trial
 					m_iAvgInterSwitchTime += m_aTimers[i];
 			}
 			
+			int count = 0;
+			boolean isHomologous;
+			
+			for (int i = 1; i < m_aRawEntries.length; i++)
+			{
+				isHomologous = false;
+				
+				if (m_aRawEntries[i] == 0)
+				{
+					count++;
+					for (int j = 0; j < m_aIntraMirror.length; j++)
+					{
+						if (m_aIntraMirror[j] == count)
+							isHomologous = true;
+					}
+					
+					if (isHomologous)
+						m_iAvgInterHomologousSwitchTime += m_aTimers[i];
+					else
+						m_iAvgInterNonHomologousSwitchTime += m_aTimers[i];
+				}
+			}
+			
+			m_iAvgInterHomologousSwitchTime /= 4;
+			m_iAvgInterNonHomologousSwitchTime /= 4;
 			m_iAvgInterSwitchTime /= 8;
 			m_iAvgIntraSwitchTime /= 11;
 		}
@@ -187,15 +216,6 @@ public class Trial
 	public int getCurrentFinger(int index)
 	{
 		return m_aEntries[index];
-	}
-	public String getHomologousString()
-	{
-		String finalString = "";
-		
-		for (int i = 0; i < m_aIntraMirror.length; i++)
-			finalString += m_aIntraMirror[i] + "\t";
-		
-		return finalString;
 	}
 	public String ExportTrial()
 	{
@@ -231,7 +251,8 @@ public class Trial
 		
 		exportString += "Average InterSwitch Time: \t" + m_iAvgInterSwitchTime + "\r\n";
 		exportString += "Average IntraSwitch Time: \t" + m_iAvgIntraSwitchTime + "\r\n";
-		exportString += "Homologous InterSwitch Entries: \t" + getHomologousString() + "\r\n";
+		exportString += "Average Homologous InterSwitch Time: \t" + m_iAvgInterHomologousSwitchTime + "\r\n";
+		exportString += "Average Non-Homologous InterSwitch Time: \t" + m_iAvgInterNonHomologousSwitchTime + "\r\n";
 		exportString += "Fastest Time: \t" + m_iFastestTime + "\r\n\r\n";
 
 		return exportString;
