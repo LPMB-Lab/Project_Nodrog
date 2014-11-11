@@ -124,7 +124,7 @@ class drawWindow extends JPanel implements MouseListener
 	        	g2d.drawString("FINGER TRACKING", 5, STATE_POSITION);
 	        	break;
 	        case COUNTDOWN:
-	        	g2d.drawString("Countdown to begin in " + m_iGlobalTimer + " seconds", 5, STATE_POSITION);
+	        	g2d.drawString("Countdown to begin in " + m_iGlobalTimer/1000 + " seconds", 5, STATE_POSITION);
 	        case IN_TRIAL:
 	        	break;
 	        case COMPLETED:
@@ -170,8 +170,8 @@ class drawWindow extends JPanel implements MouseListener
 				}
 				else
 				{
-					m_Timer.schedule(new updateTask(State.IN_TRIAL), 1000);
-					m_iGlobalTimer--;
+					m_Timer.schedule(new updateTask(State.IN_TRIAL), 500);
+					m_iGlobalTimer -= 500;
 				}
 			}
 			
@@ -207,7 +207,7 @@ class drawWindow extends JPanel implements MouseListener
     {
     	m_iGlobalTimer = timer;
     	m_State = State.COUNTDOWN;
-    	m_Timer.schedule(new updateTask(state), 1000);
+    	m_Timer.schedule(new updateTask(state), 500);
     }
 	@Override
 	public void mousePressed(MouseEvent e)
@@ -227,7 +227,7 @@ class drawWindow extends JPanel implements MouseListener
 		        case FINGER_TRACKING:
 		        {
 		        	if (m_vFingers.size() >= 8)
-		        		countDownToState(5, State.IN_TRIAL);
+		        		countDownToState(5000, State.IN_TRIAL);
 		        	else
 		        		m_vFingers.addElement(new Finger(x-m_iCircleDiameter/2, y-m_iCircleDiameter/2));
 	        		break;
@@ -290,7 +290,7 @@ class drawWindow extends JPanel implements MouseListener
 		{
 			m_bIsPaused = false;
 			if (m_RecoveryState == State.COUNTDOWN)
-				countDownToState(5, State.IN_TRIAL);
+				countDownToState(5000, State.IN_TRIAL);
 			else
 				m_State = m_RecoveryState;
 		}
@@ -377,9 +377,9 @@ class drawWindow extends JPanel implements MouseListener
 					m_iCurrentTrialStep = 0;
 					
 					if (m_iCurrentTrial == 19)
-						countDownToState(60, State.IN_TRIAL);
+						countDownToState(60000, State.IN_TRIAL);
 					else
-						countDownToState(5, State.IN_TRIAL);
+						countDownToState(5000, State.IN_TRIAL);
 				}
 			}
 			else
