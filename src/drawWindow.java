@@ -209,51 +209,56 @@ class drawWindow extends JPanel implements MouseListener
     	m_State = State.COUNTDOWN;
     	m_Timer.schedule(new updateTask(state), 500);
     }
-	@Override
-	public void mousePressed(MouseEvent e)
-	{	
-		int x = e.getX();
+    @Override
+	public void mouseClicked(MouseEvent e)
+    {
+    	int x = e.getX();
 		int y = e.getY();
 		
 		if (startButton.isPressed(x, y))		{StartSimulation();}
 		else if (pauseButton.isPressed(x, y))	{PauseSimulation();}
 		else if (quitButton.isPressed(x, y))	{QuitSimulation();}
 		else if (restartButton.isPressed(x,  y)){Reset();}
-		else if(saveButton.isPressed(x,  y))	{ExportFile();}
-		else
+		else if (saveButton.isPressed(x,  y))	{ExportFile();}
+		else if (m_State == State.FINGER_TRACKING)
 		{
-			switch(m_State)
-	        {
-		        case FINGER_TRACKING:
-		        {
-		        	if (m_vFingers.size() >= 8)
-		        		countDownToState(5000, State.IN_TRIAL);
-		        	else
-		        		m_vFingers.addElement(new Finger(x-m_iCircleDiameter/2, y-m_iCircleDiameter/2));
-	        		break;
-	        	}
-		        case IN_TRIAL:
-		        {
-		        	m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
-		        	int fingerIndex = m_CurrentTrial.getCurrentFinger(m_iCurrentTrialStep);
-		        	
-		        	switch (fingerIndex)
-		        	{
-		    	    	case -4:CheckClick(x, y, 0);	break;
-		    	    	case -3: CheckClick(x, y, 1);	break;
-		    	    	case -2: CheckClick(x, y, 2);	break;
-		    	    	case -1: CheckClick(x, y, 3);	break;
-		    	    	case 1: CheckClick(x, y, 4);	break;
-		    	    	case 2: CheckClick(x, y, 5);	break;
-		    	    	case 3: CheckClick(x, y, 6);	break;
-		    	    	case 4: CheckClick(x, y, 7);	break;
-		        	}
-	        		break;
-	        	}
-			default:
-				break;
-	        }
+			if (m_vFingers.size() >= 8)
+        		countDownToState(5000, State.IN_TRIAL);
+        	else
+        		m_vFingers.addElement(new Finger(x-m_iCircleDiameter/2, y-m_iCircleDiameter/2));
 		}
+		
+		repaint();
+    }
+	@Override
+	public void mousePressed(MouseEvent e)
+	{	
+		int x = e.getX();
+		int y = e.getY();
+		
+		switch(m_State)
+        {
+	        case IN_TRIAL:
+	        {
+	        	m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
+	        	int fingerIndex = m_CurrentTrial.getCurrentFinger(m_iCurrentTrialStep);
+	        	
+	        	switch (fingerIndex)
+	        	{
+	    	    	case -4:CheckClick(x, y, 0);	break;
+	    	    	case -3: CheckClick(x, y, 1);	break;
+	    	    	case -2: CheckClick(x, y, 2);	break;
+	    	    	case -1: CheckClick(x, y, 3);	break;
+	    	    	case 1: CheckClick(x, y, 4);	break;
+	    	    	case 2: CheckClick(x, y, 5);	break;
+	    	    	case 3: CheckClick(x, y, 6);	break;
+	    	    	case 4: CheckClick(x, y, 7);	break;
+	        	}
+        		break;
+        	}
+		default:
+			break;
+        }
 		
 		repaint();
 	}
@@ -410,7 +415,4 @@ class drawWindow extends JPanel implements MouseListener
 
 	@Override
 	public void mouseReleased(MouseEvent e) {}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {}
 }
