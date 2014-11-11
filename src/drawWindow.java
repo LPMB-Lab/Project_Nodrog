@@ -29,9 +29,6 @@ import javax.swing.JTextField;
 
 class drawWindow extends JPanel implements MouseListener
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private static final int m_iCircleDiameter = 100;
 	private static final int STATE_POSITION = 105;
@@ -144,9 +141,11 @@ class drawWindow extends JPanel implements MouseListener
         	int y = m_vFingers.get(i).getY();
         	
         	if (m_vFingers.get(i).isFill())
-        		g2d.fillOval( x, y, m_iCircleDiameter, m_iCircleDiameter);
+        		g2d.fillRect( x, y, m_iCircleDiameter, m_iCircleDiameter*2);
+        		//g2d.fillOval( x, y, m_iCircleDiameter, m_iCircleDiameter);
         	else
-        		g2d.drawOval( x, y, m_iCircleDiameter, m_iCircleDiameter);
+        		g2d.drawRect( x, y, m_iCircleDiameter, m_iCircleDiameter*2);
+        		//g2d.drawOval( x, y, m_iCircleDiameter, m_iCircleDiameter);
         }
     }
     class updateTask extends TimerTask
@@ -262,7 +261,7 @@ class drawWindow extends JPanel implements MouseListener
 		
 		repaint();
 	}
-	private void clearCircles()
+	private void clearFingers()
 	{
 		for (int i = 0; i < m_vFingers.size(); i++)
 			m_vFingers.get(i).setFill(false);
@@ -367,7 +366,7 @@ class drawWindow extends JPanel implements MouseListener
 			m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
 			m_CurrentTrial.setTimer(m_iCurrentTrialStep, diffTime);
 			
-			clearCircles();
+			clearFingers();
 			
 			if (m_iCurrentTrialStep == 19)
 			{
