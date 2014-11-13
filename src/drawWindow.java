@@ -30,7 +30,7 @@ import javax.swing.JTextField;
 class drawWindow extends JPanel implements MouseListener
 {
 	private static final long serialVersionUID = 1L;
-	private static final int m_iCircleDiameter = 100;
+	private static final int m_iRectangleDimension = 100;
 	private static final int STATE_POSITION = 105;
 
 	Dimension screenSize;
@@ -141,10 +141,10 @@ class drawWindow extends JPanel implements MouseListener
         	int y = m_vFingers.get(i).getY();
         	
         	if (m_vFingers.get(i).isFill())
-        		g2d.fillRect( x, y, m_iCircleDiameter, m_iCircleDiameter*2);
+        		g2d.fillRect( x, y, m_iRectangleDimension, m_iRectangleDimension*3);
         		//g2d.fillOval( x, y, m_iCircleDiameter, m_iCircleDiameter);
         	else
-        		g2d.drawRect( x, y, m_iCircleDiameter, m_iCircleDiameter*2);
+        		g2d.drawRect( x, y, m_iRectangleDimension, m_iRectangleDimension*3);
         		//g2d.drawOval( x, y, m_iCircleDiameter, m_iCircleDiameter);
         }
     }
@@ -224,7 +224,7 @@ class drawWindow extends JPanel implements MouseListener
 			if (m_vFingers.size() >= 8)
         		countDownToState(5000, State.IN_TRIAL);
         	else
-        		m_vFingers.addElement(new Finger(x-m_iCircleDiameter/2, y-m_iCircleDiameter/2));
+        		m_vFingers.addElement(new Finger(x-m_iRectangleDimension/2, y-m_iRectangleDimension*5/2));
 		}
 		
 		repaint();
@@ -356,9 +356,13 @@ class drawWindow extends JPanel implements MouseListener
 	{
 		int x1 = m_vFingers.get(fingerID).getX();
 		int y1 = m_vFingers.get(fingerID).getY();
-		int z = (int) Math.sqrt(Math.pow((x1+m_iCircleDiameter/2-x), 2) + Math.pow((y1+m_iCircleDiameter/2-y), 2));
+		//int z = (int) Math.sqrt(Math.pow((x1+m_iRectangleDimension/2-x), 2) + Math.pow((y1+m_iRectangleDimension/2-y), 2));
 		
-		if ( z < m_iCircleDiameter/2)
+		//if ( z < m_iRectangleDimension/2)
+		if (	x > x1 &&
+				x < (x1 + m_iRectangleDimension) &&
+				y > y1 &&
+				y < (y1 + m_iRectangleDimension*3))
 		{
 			long lEndTime = new Date().getTime();
 			long diffTime = lEndTime - m_lStartTime;
