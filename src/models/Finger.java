@@ -1,3 +1,4 @@
+package models;
 public class Finger
 {
 	private int x;

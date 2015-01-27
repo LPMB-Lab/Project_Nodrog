@@ -1,3 +1,4 @@
+package models;
 import java.awt.image.BufferedImage;
 
 public class Button
@@ -8,7 +9,7 @@ public class Button
 	private int height;
 	private BufferedImage image;
 	
-	Button(BufferedImage image, int x, int y)
+	public Button(BufferedImage image, int x, int y)
 	{
 		this.x = x;
 		this.y = y;

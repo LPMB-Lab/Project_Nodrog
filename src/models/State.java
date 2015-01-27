@@ -1,4 +1,5 @@
-enum State
+package models;
+public enum State
 {
 	PAUSE,
 	IDLE,

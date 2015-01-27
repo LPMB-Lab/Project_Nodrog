@@ -27,6 +27,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import models.Button;
+import models.Finger;
+import models.State;
+import models.Trial;
+
 class drawWindow extends JPanel implements MouseListener
 {
 	private static final long serialVersionUID = 1L;

@@ -1,3 +1,4 @@
+package models;
 /*
  *   FINGERS:
  *   ==========
@@ -30,7 +31,7 @@ public class Trial
 	private int m_iAvgInterNonHomologousSwitchTime;
 	private long m_iFastestTime;
 	
-	Trial()
+	public Trial()
 	{	
 		for (int i = 0; i < m_aEntries.length; i++)
 			m_aTimers[i] = 0;
