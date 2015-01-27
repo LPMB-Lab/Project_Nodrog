@@ -1,16 +1,15 @@
 package models;
+
 import java.awt.image.BufferedImage;
 
-public class Button
-{
+public class Button {
 	private int x;
 	private int y;
 	private int width;
 	private int height;
 	private BufferedImage image;
-	
-	public Button(BufferedImage image, int x, int y)
-	{
+
+	public Button(BufferedImage image, int x, int y) {
 		this.x = x;
 		this.y = y;
 		this.image = image;
@@ -18,17 +17,31 @@ public class Button
 		this.height = image.getHeight();
 	}
 
-	public int getX() {return x;}
-	public int getY() {return y;}
-	public int getWidth() {return width;}
-	public int getHeight() {return height;}
-	public BufferedImage getImage() {return image;}
-	public boolean isPressed(int pressX, int pressY)
-	{
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public BufferedImage getImage() {
+		return image;
+	}
+
+	public boolean isPressed(int pressX, int pressY) {
 		if (pressX < x + width && pressX > x)
 			if (pressY < y + height && pressY > y)
 				return true;
-		
+
 		return false;
 	}
 }
