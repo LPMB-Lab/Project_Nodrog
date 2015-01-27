@@ -36,6 +36,7 @@ class drawWindow extends JPanel implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private static final int m_iRectangleDimension = 100;
 	private static final int STATE_POSITION = 105;
+	private static final int TOTAL_TRIALS = 20;
 
 	Dimension screenSize;
 	RenderingHints rh;
@@ -102,7 +103,7 @@ class drawWindow extends JPanel implements MouseListener {
 		m_bIsPaused = false;
 		m_iGlobalTimer = 0;
 
-		for (int i = 0; i < 40; i++) {
+		for (int i = 0; i < TOTAL_TRIALS; i++) {
 			Trial myTrial = new Trial();
 			m_vGeneratedTrials.add(myTrial);
 		}
@@ -143,7 +144,7 @@ class drawWindow extends JPanel implements MouseListener {
 			break;
 		}
 
-		g2d.drawString("CURRENT TRIAL: " + (m_iCurrentTrial + 1) + "/40", 5, 75);
+		g2d.drawString("CURRENT TRIAL: " + (m_iCurrentTrial + 1) + "/" + TOTAL_TRIALS, 5, 75);
 		g2d.drawImage(pauseButton.getImage(), pauseButton.getX(),
 				pauseButton.getY(), null);
 		g2d.drawImage(restartButton.getImage(), restartButton.getX(),
@@ -415,14 +416,14 @@ class drawWindow extends JPanel implements MouseListener {
 			clearFingers();
 
 			if (m_iCurrentTrialStep == 19) {
-				if (m_iCurrentTrial == 39) {
+				if (m_iCurrentTrial == TOTAL_TRIALS-1) {
 					m_State = State.COMPLETED;
 					ExportFile();
 				} else {
 					m_iCurrentTrial++;
 					m_iCurrentTrialStep = 0;
 
-					if (m_iCurrentTrial == 19)
+					if (m_iCurrentTrial == TOTAL_TRIALS/2-1)
 						countDownToState(60000, State.IN_TRIAL);
 					else
 						countDownToState(5000, State.IN_TRIAL);
