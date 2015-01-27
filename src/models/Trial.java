@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Random;
 
 public class Trial {
+	
 	private int[] m_aRawEntries = new int[20];
 	private int[] m_aEntries = new int[20];
 	private long[] m_aTimers = new long[20];
@@ -29,6 +30,8 @@ public class Trial {
 	private int m_iAvgIntraSwitchTime;
 	private int m_iAvgInterHomologousSwitchTime;
 	private int m_iAvgInterNonHomologousSwitchTime;
+	private int m_iAvgLeftToRightSwitchTime;
+	private int m_iAvgRightToLeftSwitchTime;
 	private long m_iFastestTime;
 
 	public Trial() {
@@ -39,6 +42,8 @@ public class Trial {
 		m_iAvgIntraSwitchTime = 0;
 		m_iAvgInterHomologousSwitchTime = 0;
 		m_iAvgInterNonHomologousSwitchTime = 0;
+		m_iAvgLeftToRightSwitchTime = 0;
+		m_iAvgRightToLeftSwitchTime = 0;
 		m_iIntraSwapMirrorCount = 0;
 		GenerateTrials();
 	}
@@ -187,11 +192,23 @@ public class Trial {
 						m_iAvgInterNonHomologousSwitchTime += m_aTimers[i];
 				}
 			}
+			
+			for (int i = 1; i < m_aRawEntries.length; i++) {
+				if (m_aRawEntries[i] == 0) {
+					if (m_aEntries[i-1] > 0) {
+						m_iAvgRightToLeftSwitchTime += m_aTimers[i];
+					} else {
+						m_iAvgLeftToRightSwitchTime += m_aTimers[i];
+					}
+				}
+			}
 
 			m_iAvgInterHomologousSwitchTime /= 4;
 			m_iAvgInterNonHomologousSwitchTime /= 4;
 			m_iAvgInterSwitchTime /= 8;
 			m_iAvgIntraSwitchTime /= 11;
+			m_iAvgRightToLeftSwitchTime /= 4;
+			m_iAvgLeftToRightSwitchTime /= 4;
 		}
 	}
 
@@ -235,6 +252,10 @@ public class Trial {
 				+ m_iAvgInterHomologousSwitchTime + "\r\n";
 		exportString += "Average Non-Homologous InterSwitch Time: \t"
 				+ m_iAvgInterNonHomologousSwitchTime + "\r\n";
+		exportString += "Average Right To Left Switch Time: \t"
+				+ m_iAvgRightToLeftSwitchTime + "\r\n";
+		exportString += "Average Left To Right Switch Time: \t"
+				+ m_iAvgLeftToRightSwitchTime + "\r\n";
 		exportString += "Fastest Time: \t" + m_iFastestTime + "\r\n\r\n";
 
 		return exportString;
