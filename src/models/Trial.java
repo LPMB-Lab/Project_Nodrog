@@ -215,48 +215,55 @@ public class Trial {
 	public int getCurrentFinger(int index) {
 		return m_aEntries[index];
 	}
-
-	public String ExportTrial() {
-		String exportString = "Timings:\t";
+	public String ExportTrialRaw() {
+		String exportString = "";
+		String tabl = "\t";
+		String endl = "\r\n";
+		
+		exportString += "Timings:" + tabl;
 
 		for (int i = 0; i < m_aTimers.length; i++) {
 			if (i == 19)
-				exportString += m_aTimers[i] + "\r\n";
+				exportString += m_aTimers[i] + endl;
 			else
-				exportString += m_aTimers[i] + "\t";
+				exportString += m_aTimers[i] + tabl;
 		}
 
-		exportString += "Fingers:\t";
+		exportString += "Fingers:" + tabl;
 
 		for (int i = 0; i < m_aEntries.length; i++) {
 			if (i == 19)
-				exportString += m_aEntries[i] + "\r\n";
+				exportString += m_aEntries[i] + endl;
 			else
-				exportString += m_aEntries[i] + "\t";
+				exportString += m_aEntries[i] + tabl;
 		}
 
-		exportString += "Raw Fingers:\t";
+		exportString += "Raw Fingers:" + tabl;
 
 		for (int i = 0; i < m_aRawEntries.length; i++) {
 			if (i == 19)
-				exportString += m_aRawEntries[i] + "\r\n";
+				exportString += m_aRawEntries[i] + endl;
 			else
-				exportString += m_aRawEntries[i] + "\t";
+				exportString += m_aRawEntries[i] + tabl;
 		}
+		
+		exportString += endl;
+		
+		return exportString;
+	}
 
-		exportString += "Average InterSwitch Time: \t" + m_iAvgInterSwitchTime
-				+ "\r\n";
-		exportString += "Average IntraSwitch Time: \t" + m_iAvgIntraSwitchTime
-				+ "\r\n";
-		exportString += "Average Homologous InterSwitch Time: \t"
-				+ m_iAvgInterHomologousSwitchTime + "\r\n";
-		exportString += "Average Non-Homologous InterSwitch Time: \t"
-				+ m_iAvgInterNonHomologousSwitchTime + "\r\n";
-		exportString += "Average Right To Left Switch Time: \t"
-				+ m_iAvgRightToLeftSwitchTime + "\r\n";
-		exportString += "Average Left To Right Switch Time: \t"
-				+ m_iAvgLeftToRightSwitchTime + "\r\n";
-		exportString += "Fastest Time: \t" + m_iFastestTime + "\r\n\r\n";
+	public String ExportTrial() {
+		String exportString = "";
+		String tabl = "\t";
+		String endl = "\r\n";
+
+		exportString += m_iAvgInterSwitchTime + tabl;
+		exportString += m_iAvgIntraSwitchTime + tabl;
+		exportString += m_iAvgInterHomologousSwitchTime + tabl;
+		exportString += m_iAvgInterNonHomologousSwitchTime + tabl;
+		exportString += m_iAvgRightToLeftSwitchTime + tabl;
+		exportString += m_iAvgLeftToRightSwitchTime + tabl;
+		exportString += m_iFastestTime + endl;
 
 		return exportString;
 	}

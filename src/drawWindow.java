@@ -378,11 +378,31 @@ class drawWindow extends JPanel implements MouseListener {
 							+ fileNameInput.getText() + ".xls";
 
 				PrintWriter writer = new PrintWriter(fileName, "US-ASCII");
-				String exportString = "";
+				
+				String endl = "\r\n";
+				String tabl = "\t";
+				String exportString = tabl;
+				
+				exportString += "Average Interswitch" + tabl;
+				exportString += "Average Intraswitch" + tabl;
+				exportString += "Average Homologous InterSwitch" + tabl;
+				exportString += "Average Non-Homologous InterSwitch" + tabl;
+				exportString += "Average Left To Right" + tabl;
+				exportString += "Average Right To Left" + tabl;
+				exportString += "Fastest Time" + endl;
 
 				for (int i = 0; i < m_vGeneratedTrials.size(); i++) {
-					exportString += "TRIAL #" + (i + 1) + "\r\n";
+					exportString += "TRIAL #" + (i + 1) + tabl;
 					exportString += m_vGeneratedTrials.get(i).ExportTrial();
+				}
+				
+				for (int i = 0; i < 4; i++) {
+					exportString += endl;
+				}
+				
+				for (int i = 0; i < m_vGeneratedTrials.size(); i++) {
+					exportString += "TRIAL #" + (i + 1) + endl;
+					exportString += m_vGeneratedTrials.get(i).ExportTrialRaw();
 				}
 
 				writer.println(exportString);
