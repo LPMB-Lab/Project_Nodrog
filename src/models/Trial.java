@@ -221,6 +221,10 @@ public class Trial {
 			m_iAvgLeftToRightSwitchTime /= 4;
 		}
 	}
+	
+	public int getCurrentFinger(int index) {
+		return m_aEntries[index];
+	}
 
 	public void setErrorFinger(int fingerIndex) {
 		m_aErrorFingerPressed[fingerIndex]++;
@@ -233,9 +237,15 @@ public class Trial {
 			m_iOppositeHandErrors++;
 		}
 	}
-
-	public int getCurrentFinger(int index) {
-		return m_aEntries[index];
+	
+	public void UpdateTotals(int[] totals) {
+		totals[0] += m_iAvgInterSwitchTime;
+		totals[1] += m_iAvgIntraSwitchTime;
+		totals[2] += m_iAvgInterHomologousSwitchTime;
+		totals[3] += m_iAvgInterNonHomologousSwitchTime;
+		totals[4] += m_iAvgRightToLeftSwitchTime;
+		totals[5] += m_iAvgLeftToRightSwitchTime;
+		totals[6] += m_iFastestTime;
 	}
 
 	public String ExportTrialRaw() {
@@ -307,33 +317,5 @@ public class Trial {
 		exportString += m_iFastestTime + endl;
 
 		return exportString;
-	}
-
-	public int getM_iAvgInterSwitchTime() {
-		return m_iAvgInterSwitchTime;
-	}
-
-	public int getM_iAvgIntraSwitchTime() {
-		return m_iAvgIntraSwitchTime;
-	}
-
-	public int getM_iAvgInterHomologousSwitchTime() {
-		return m_iAvgInterHomologousSwitchTime;
-	}
-
-	public int getM_iAvgInterNonHomologousSwitchTime() {
-		return m_iAvgInterNonHomologousSwitchTime;
-	}
-
-	public int getM_iAvgLeftToRightSwitchTime() {
-		return m_iAvgLeftToRightSwitchTime;
-	}
-
-	public int getM_iAvgRightToLeftSwitchTime() {
-		return m_iAvgRightToLeftSwitchTime;
-	}
-
-	public long getM_iFastestTime() {
-		return m_iFastestTime;
 	}
 }

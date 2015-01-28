@@ -382,10 +382,23 @@ class drawWindow extends JPanel implements MouseListener {
 				exportString += "Average Left To Right" + tabl;
 				exportString += "Average Right To Left" + tabl;
 				exportString += "Fastest Time" + endl;
+				
+				int[] totals = new int[7];
+				
+				for (int i = 0; i < totals.length; i++) {
+					totals[i] = 0;
+				}
 
 				for (int i = 0; i < m_vGeneratedTrials.size(); i++) {
 					exportString += "TRIAL #" + (i + 1) + tabl;
+					m_vGeneratedTrials.get(i).UpdateTotals(totals);
 					exportString += m_vGeneratedTrials.get(i).ExportTrial();
+				}
+				
+				exportString += "AVERAGE" + tabl;
+				for (int i = 0; i < totals.length; i++) {
+					totals[i] /= TOTAL_TRIALS;
+					exportString += totals[i] + tabl;
 				}
 				
 				for (int i = 0; i < 4; i++) {
@@ -395,14 +408,14 @@ class drawWindow extends JPanel implements MouseListener {
 				exportString += "ERRORS" + endl;
 				
 				exportString += tabl;
-				exportString += "Left Pinky" + tabl;
-				exportString += "Left Ring" + tabl;
-				exportString += "Left Middle" + tabl;
-				exportString += "Left Index" + tabl;
-				exportString += "Right Index" + tabl;
-				exportString += "Right Middle" + tabl;
-				exportString += "Right Ring" + tabl;
-				exportString += "Right Pinky" + tabl;
+				exportString += "LP" + tabl;
+				exportString += "LR" + tabl;
+				exportString += "LM" + tabl;
+				exportString += "LI" + tabl;
+				exportString += "RI" + tabl;
+				exportString += "RM" + tabl;
+				exportString += "RR" + tabl;
+				exportString += "RP" + tabl;
 				exportString += "Same Hand" + tabl;
 				exportString += "Opposite Hand" + endl;
 				
