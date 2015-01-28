@@ -393,6 +393,8 @@ class drawWindow extends JPanel implements MouseListener {
 					exportString += endl;
 				}
 				
+				exportString += "ERRORS" + endl;
+				
 				exportString += tabl;
 				exportString += "Left Pinky" + tabl;
 				exportString += "Left Ring" + tabl;
@@ -411,6 +413,8 @@ class drawWindow extends JPanel implements MouseListener {
 				for (int i = 0; i < 4; i++) {
 					exportString += endl;
 				}
+				
+				exportString += "TRIAL INFORMATION" + endl;
 				
 				for (int i = 0; i < m_vGeneratedTrials.size(); i++) {
 					exportString += "TRIAL #" + (i + 1) + endl;
