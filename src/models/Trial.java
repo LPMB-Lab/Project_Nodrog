@@ -238,14 +238,23 @@ public class Trial {
 		}
 	}
 	
-	public void UpdateTotals(int[] totals) {
-		totals[0] += m_iAvgInterSwitchTime;
-		totals[1] += m_iAvgIntraSwitchTime;
-		totals[2] += m_iAvgInterHomologousSwitchTime;
-		totals[3] += m_iAvgInterNonHomologousSwitchTime;
-		totals[4] += m_iAvgRightToLeftSwitchTime;
-		totals[5] += m_iAvgLeftToRightSwitchTime;
-		totals[6] += m_iFastestTime;
+	public void UpdateErrorTotals(double[] errorTotals) {
+		for (int i = 0; i < m_aErrorFingerPressed.length; i ++) {
+			errorTotals[i] += m_aErrorFingerPressed[i];
+		}
+		
+		errorTotals[8] += m_iSameHandErrors;
+		errorTotals[9] += m_iOppositeHandErrors;
+	}
+	
+	public void UpdateTotals(double[] trialTotals) {
+		trialTotals[0] += m_iAvgInterSwitchTime;
+		trialTotals[1] += m_iAvgIntraSwitchTime;
+		trialTotals[2] += m_iAvgInterHomologousSwitchTime;
+		trialTotals[3] += m_iAvgInterNonHomologousSwitchTime;
+		trialTotals[4] += m_iAvgRightToLeftSwitchTime;
+		trialTotals[5] += m_iAvgLeftToRightSwitchTime;
+		trialTotals[6] += m_iFastestTime;
 	}
 
 	public String ExportTrialRaw() {

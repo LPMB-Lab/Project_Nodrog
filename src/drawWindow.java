@@ -383,22 +383,27 @@ class drawWindow extends JPanel implements MouseListener {
 				exportString += "Average Right To Left" + tabl;
 				exportString += "Fastest Time" + endl;
 				
-				int[] totals = new int[7];
+				double[] trialTotals = new double[7];
+				double[] errorTotals = new double[10];
 				
-				for (int i = 0; i < totals.length; i++) {
-					totals[i] = 0;
+				for (int i = 0; i < trialTotals.length; i++) {
+					trialTotals[i] = 0;
+				}
+				
+				for (int i = 0; i < errorTotals.length; i++) {
+					errorTotals[i] = 0;
 				}
 
 				for (int i = 0; i < m_vGeneratedTrials.size(); i++) {
 					exportString += "TRIAL #" + (i + 1) + tabl;
-					m_vGeneratedTrials.get(i).UpdateTotals(totals);
+					m_vGeneratedTrials.get(i).UpdateTotals(trialTotals);
 					exportString += m_vGeneratedTrials.get(i).ExportTrial();
 				}
 				
 				exportString += "AVERAGE" + tabl;
-				for (int i = 0; i < totals.length; i++) {
-					totals[i] /= TOTAL_TRIALS;
-					exportString += totals[i] + tabl;
+				for (int i = 0; i < trialTotals.length; i++) {
+					trialTotals[i] /= TOTAL_TRIALS;
+					exportString += trialTotals[i] + tabl;
 				}
 				
 				for (int i = 0; i < 4; i++) {
@@ -421,7 +426,14 @@ class drawWindow extends JPanel implements MouseListener {
 				
 				for (int i = 0; i < m_vGeneratedTrials.size(); i++) {
 					exportString += "TRIAL #" + (i + 1) + tabl;
+					m_vGeneratedTrials.get(i).UpdateErrorTotals(errorTotals);
 					exportString += m_vGeneratedTrials.get(i).ExportErrorTrial();
+				}
+				
+				exportString += "AVERAGE" + tabl;
+				for (int i = 0; i < errorTotals.length; i++) {
+					errorTotals[i] /= TOTAL_TRIALS;
+					exportString += errorTotals[i] + tabl;
 				}
 				
 				for (int i = 0; i < 4; i++) {
