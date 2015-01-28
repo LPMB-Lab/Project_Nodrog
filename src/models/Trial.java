@@ -25,6 +25,7 @@ public class Trial {
 	private int[] m_aEntries = new int[20];
 	private long[] m_aTimers = new long[20];
 	private int[] m_aIntraMirror = new int[4];
+	private int[] m_aErrorFingerPressed = new int[8];
 	private int m_iIntraSwapMirrorCount;
 	private int m_iAvgInterSwitchTime;
 	private int m_iAvgIntraSwitchTime;
@@ -35,8 +36,13 @@ public class Trial {
 	private long m_iFastestTime;
 
 	public Trial() {
-		for (int i = 0; i < m_aEntries.length; i++)
+		for (int i = 0; i < m_aEntries.length; i++) {
 			m_aTimers[i] = 0;
+		}
+
+		for (int i = 0; i < m_aErrorFingerPressed.length; i++) {
+			m_aErrorFingerPressed[i] = 0;
+		}
 
 		m_iAvgInterSwitchTime = 0;
 		m_iAvgIntraSwitchTime = 0;
@@ -212,14 +218,19 @@ public class Trial {
 		}
 	}
 
+	public void setErrorFinger(int fingerIndex) {
+		m_aErrorFingerPressed[fingerIndex]++;
+	}
+
 	public int getCurrentFinger(int index) {
 		return m_aEntries[index];
 	}
+
 	public String ExportTrialRaw() {
 		String exportString = "";
 		String tabl = "\t";
 		String endl = "\r\n";
-		
+
 		exportString += "Timings:" + tabl;
 
 		for (int i = 0; i < m_aTimers.length; i++) {
@@ -246,7 +257,20 @@ public class Trial {
 			else
 				exportString += m_aRawEntries[i] + tabl;
 		}
+
+		exportString += endl;
+
+		return exportString;
+	}
+	
+	public String ExportErrorTrial() {
+		String exportString = "";
+		String tabl = "\t";
+		String endl = "\r\n";
 		
+		for (int i = 0; i < m_aErrorFingerPressed.length; i++) {
+			exportString += m_aErrorFingerPressed[i] + tabl;
+		}
 		exportString += endl;
 		
 		return exportString;

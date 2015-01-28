@@ -203,34 +203,8 @@ class drawWindow extends JPanel implements MouseListener {
 	private void updateTrial() {
 		m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
 		int fingerIndex = m_CurrentTrial.getCurrentFinger(m_iCurrentTrialStep);
-
-		switch (fingerIndex) {
-		case -4:
-			m_vFingers.get(0).setFill(true);
-			break;
-		case -3:
-			m_vFingers.get(1).setFill(true);
-			break;
-		case -2:
-			m_vFingers.get(2).setFill(true);
-			break;
-		case -1:
-			m_vFingers.get(3).setFill(true);
-			break;
-		case 1:
-			m_vFingers.get(4).setFill(true);
-			break;
-		case 2:
-			m_vFingers.get(5).setFill(true);
-			break;
-		case 3:
-			m_vFingers.get(6).setFill(true);
-			break;
-		case 4:
-			m_vFingers.get(7).setFill(true);
-			break;
-		}
-
+		fingerIndex = fingerIndex + (fingerIndex < 0 ? 4 : 3);
+		m_vFingers.get(fingerIndex).setFill(true);
 		repaint();
 	}
 
@@ -270,46 +244,65 @@ class drawWindow extends JPanel implements MouseListener {
 	public void mousePressed(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
+		
+		if (m_State != State.IN_TRIAL) {
+			repaint();
+			return;
+		}
 
-		switch (m_State) {
-		case IN_TRIAL: {
-			m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
-			int fingerIndex = m_CurrentTrial
-					.getCurrentFinger(m_iCurrentTrialStep);
+		int fingerIndex = m_vGeneratedTrials.get(m_iCurrentTrial)
+				.getCurrentFinger(m_iCurrentTrialStep);
 
-			switch (fingerIndex) {
-			case -4:
-				CheckClick(x, y, 0);
-				break;
-			case -3:
-				CheckClick(x, y, 1);
-				break;
-			case -2:
-				CheckClick(x, y, 2);
-				break;
-			case -1:
-				CheckClick(x, y, 3);
-				break;
-			case 1:
-				CheckClick(x, y, 4);
-				break;
-			case 2:
-				CheckClick(x, y, 5);
-				break;
-			case 3:
-				CheckClick(x, y, 6);
-				break;
-			case 4:
-				CheckClick(x, y, 7);
+		for (int i = 0; i < m_vFingers.size(); i++) {
+			if (m_vFingers.get(i).isPressed(x, y)) {
+				fingerIndex = fingerIndex + (fingerIndex < 0 ? 4 : 3);
+				
+				if (i == fingerIndex) {
+					RegisterCorrectFingerPress();
+				} else {
+					m_vGeneratedTrials.get(m_iCurrentTrial).setErrorFinger(i);
+				}
 				break;
 			}
-			break;
-		}
-		default:
-			break;
 		}
 
 		repaint();
+	}
+	
+	private void RegisterCorrectFingerPress() {
+		long lEndTime = new Date().getTime();
+		long diffTime = lEndTime - m_lStartTime;
+
+		m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
+		m_CurrentTrial.setTimer(m_iCurrentTrialStep, diffTime);
+
+		clearFingers();
+
+		if (m_iCurrentTrialStep == 19) {
+			if (m_iCurrentTrial == TOTAL_TRIALS-1) {
+				m_State = State.COMPLETED;
+				ExportFile();
+			} else {
+				m_iCurrentTrial++;
+				m_iCurrentTrialStep = 0;
+
+				if (m_iCurrentTrial == TOTAL_TRIALS/2-1)
+					countDownToState(60000, State.IN_TRIAL);
+				else
+					countDownToState(5000, State.IN_TRIAL);
+			}
+		} else {
+			correctSound.play();
+			try {
+				Thread.sleep((long) (Math.random() * 500 + 500));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			m_iCurrentTrialStep++;
+			updateTrial();
+		}
+		m_lStartTime = new Date().getTime();
 	}
 
 	private void clearFingers() {
@@ -400,6 +393,25 @@ class drawWindow extends JPanel implements MouseListener {
 					exportString += endl;
 				}
 				
+				exportString += tabl;
+				exportString += "Left Pinky" + tabl;
+				exportString += "Left Ring" + tabl;
+				exportString += "Left Middle" + tabl;
+				exportString += "Left Index" + tabl;
+				exportString += "Right Index" + tabl;
+				exportString += "Right Middle" + tabl;
+				exportString += "Right Ring" + tabl;
+				exportString += "Right Pinky" + endl;
+				
+				for (int i = 0; i < m_vGeneratedTrials.size(); i++) {
+					exportString += "TRIAL #" + (i + 1) + tabl;
+					exportString += m_vGeneratedTrials.get(i).ExportErrorTrial();
+				}
+				
+				for (int i = 0; i < 4; i++) {
+					exportString += endl;
+				}
+				
 				for (int i = 0; i < m_vGeneratedTrials.size(); i++) {
 					exportString += "TRIAL #" + (i + 1) + endl;
 					exportString += m_vGeneratedTrials.get(i).ExportTrialRaw();
@@ -415,51 +427,6 @@ class drawWindow extends JPanel implements MouseListener {
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-		}
-	}
-
-	private void CheckClick(int x, int y, int fingerID) {
-		int x1 = m_vFingers.get(fingerID).getX();
-		int y1 = m_vFingers.get(fingerID).getY();
-		// int z = (int) Math.sqrt(Math.pow((x1+m_iRectangleDimension/2-x), 2) +
-		// Math.pow((y1+m_iRectangleDimension/2-y), 2));
-
-		// if ( z < m_iRectangleDimension/2)
-		if (x > x1 && x < (x1 + m_iRectangleDimension) && y > y1
-				&& y < (y1 + m_iRectangleDimension * 3)) {
-			long lEndTime = new Date().getTime();
-			long diffTime = lEndTime - m_lStartTime;
-
-			m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
-			m_CurrentTrial.setTimer(m_iCurrentTrialStep, diffTime);
-
-			clearFingers();
-
-			if (m_iCurrentTrialStep == 19) {
-				if (m_iCurrentTrial == TOTAL_TRIALS-1) {
-					m_State = State.COMPLETED;
-					ExportFile();
-				} else {
-					m_iCurrentTrial++;
-					m_iCurrentTrialStep = 0;
-
-					if (m_iCurrentTrial == TOTAL_TRIALS/2-1)
-						countDownToState(60000, State.IN_TRIAL);
-					else
-						countDownToState(5000, State.IN_TRIAL);
-				}
-			} else {
-				correctSound.play();
-				try {
-					Thread.sleep((long) (Math.random() * 500 + 500));
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				m_iCurrentTrialStep++;
-				updateTrial();
-			}
-			m_lStartTime = new Date().getTime();
 		}
 	}
 

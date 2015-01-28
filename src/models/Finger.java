@@ -1,6 +1,7 @@
 package models;
 
 public class Finger {
+	private static final int m_iRectangleDimension = 100;
 	private int x;
 	private int y;
 	private boolean fill;
@@ -34,5 +35,13 @@ public class Finger {
 
 	public void setFill(boolean fill) {
 		this.fill = fill;
+	}
+	
+	public boolean isPressed(int pressX, int pressY) {
+		if (pressX < (x + m_iRectangleDimension) && pressX > x)
+			if (pressY < (y + m_iRectangleDimension * 3) && pressY > y)
+				return true;
+
+		return false;
 	}
 }
