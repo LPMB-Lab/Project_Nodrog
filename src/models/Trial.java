@@ -26,6 +26,8 @@ public class Trial {
 	private long[] m_aTimers = new long[20];
 	private int[] m_aIntraMirror = new int[4];
 	private int[] m_aErrorFingerPressed = new int[8];
+	private int m_iSameHandErrors;
+	private int m_iOppositeHandErrors;
 	private int m_iIntraSwapMirrorCount;
 	private int m_iAvgInterSwitchTime;
 	private int m_iAvgIntraSwitchTime;
@@ -44,6 +46,8 @@ public class Trial {
 			m_aErrorFingerPressed[i] = 0;
 		}
 
+		m_iSameHandErrors = 0;
+		m_iOppositeHandErrors = 0;
 		m_iAvgInterSwitchTime = 0;
 		m_iAvgIntraSwitchTime = 0;
 		m_iAvgInterHomologousSwitchTime = 0;
@@ -221,6 +225,14 @@ public class Trial {
 	public void setErrorFinger(int fingerIndex) {
 		m_aErrorFingerPressed[fingerIndex]++;
 	}
+	
+	public void setErrorHand(boolean sameHand) {
+		if (sameHand) {
+			m_iSameHandErrors++;
+		} else {
+			m_iOppositeHandErrors++;
+		}
+	}
 
 	public int getCurrentFinger(int index) {
 		return m_aEntries[index];
@@ -271,7 +283,12 @@ public class Trial {
 		for (int i = 0; i < m_aErrorFingerPressed.length; i++) {
 			exportString += m_aErrorFingerPressed[i] + tabl;
 		}
+		
+		exportString += m_iSameHandErrors + tabl;
+		exportString += m_iOppositeHandErrors + tabl;
 		exportString += endl;
+		
+		
 		
 		return exportString;
 	}

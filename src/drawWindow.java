@@ -158,14 +158,13 @@ class drawWindow extends JPanel implements MouseListener {
 			int x = m_vFingers.get(i).getX();
 			int y = m_vFingers.get(i).getY();
 
-			if (m_vFingers.get(i).isFill())
+			if (m_vFingers.get(i).isFill()) {
 				g2d.fillRect(x, y, m_iRectangleDimension,
 						m_iRectangleDimension * 3);
-			// g2d.fillOval( x, y, m_iCircleDiameter, m_iCircleDiameter);
-			else
+			} else {
 				g2d.drawRect(x, y, m_iRectangleDimension,
 						m_iRectangleDimension * 3);
-			// g2d.drawOval( x, y, m_iCircleDiameter, m_iCircleDiameter);
+			}
 		}
 	}
 
@@ -201,8 +200,7 @@ class drawWindow extends JPanel implements MouseListener {
 	}
 
 	private void updateTrial() {
-		m_CurrentTrial = m_vGeneratedTrials.get(m_iCurrentTrial);
-		int fingerIndex = m_CurrentTrial.getCurrentFinger(m_iCurrentTrialStep);
+		int fingerIndex = m_vGeneratedTrials.get(m_iCurrentTrial).getCurrentFinger(m_iCurrentTrialStep);
 		fingerIndex = fingerIndex + (fingerIndex < 0 ? 4 : 3);
 		m_vFingers.get(fingerIndex).setFill(true);
 		repaint();
@@ -261,6 +259,7 @@ class drawWindow extends JPanel implements MouseListener {
 					RegisterCorrectFingerPress();
 				} else {
 					m_vGeneratedTrials.get(m_iCurrentTrial).setErrorFinger(i);
+					m_vGeneratedTrials.get(m_iCurrentTrial).setErrorHand(fingerIndex < 4 && i < 4 || fingerIndex >=4 && i >= 4);
 				}
 				break;
 			}
@@ -403,7 +402,9 @@ class drawWindow extends JPanel implements MouseListener {
 				exportString += "Right Index" + tabl;
 				exportString += "Right Middle" + tabl;
 				exportString += "Right Ring" + tabl;
-				exportString += "Right Pinky" + endl;
+				exportString += "Right Pinky" + tabl;
+				exportString += "Same Hand" + tabl;
+				exportString += "Opposite Hand" + endl;
 				
 				for (int i = 0; i < m_vGeneratedTrials.size(); i++) {
 					exportString += "TRIAL #" + (i + 1) + tabl;
