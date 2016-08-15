@@ -1,4 +1,4 @@
 Project_Nodrog
 ==============
 
-Project for Gordon
+Bimanual serial reaction time task in Java for tablet
